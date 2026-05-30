@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WRO 2026 Seat & Results - Robots Meet Culture</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --wro-blue: #39a8df;
+      --wro-green: #10b981;
+      --wro-red: #eb1515;
+    }
+
+    body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; color: #334155; padding-bottom: 120px; }
+    
+    .header-section { 
+      position: relative;
+      text-align: center; 
+      padding: 60px 15px; 
+      margin-bottom: 30px;
+      background: linear-gradient(rgba(5, 150, 105, 0.85), rgba(6, 95, 70, 0.9)), 
+                  url('https://www.wro-association.org/wp-content/uploads/2023/12/banner-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      border-radius: 0 0 2rem 2rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      color: white;
+    }
+
+    .system-status-box {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-logo { 
+      max-width: 140px; 
+      height: auto; 
+      margin-bottom: 15px; 
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); 
+    }
+
+    .app-title { font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .header-section .text-muted { color: rgba(255, 255, 255, 0.8) !important; }
+
+    .card-custom { border: none; border-radius: 1.25rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); background: white; }
+    .card-custom-green-border { border-top: 6px solid var(--wro-blue); }
+    
+    .search-label {
+      font-weight: 500;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+    .search-label i { width: 25px; text-align: center; font-size: 1.1rem; }
+
+    .form-select-lg {
+      font-size: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px !important;
+      transition: all 0.2s;
+    }
+    .form-select-lg:focus {
+      border-color: var(--wro-green);
+      box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.1);
+    }
+
+    .result-label { font-size: 0.85rem; color: var(--wro-blue); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+    .seat-display { font-size: 3.5rem; font-weight: 800; color: var(--wro-red); margin: 5px 0; }
+    .team-name-display { color: #0f172a; font-weight: 600; margin-bottom: 15px; }
+    
+    .extra-info-row { background: #f1f5f9; padding: 15px; border-radius: 12px; }
+    .extra-info-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
+    .extra-info-value { font-size: 1.1rem; color: #111827; font-weight: 500; }
+
+    .member-title { color: var(--wro-blue); font-weight: 600; border-left: 5px solid var(--wro-blue); padding-left: 10px; margin-bottom: 20px; }
+    .member-box { 
+      background: white; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 1rem; 
+      padding: 1.25rem; 
+      height: 100%; 
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+      transition: transform 0.2s;
+    }
+    .member-box:hover { transform: translateY(-3px); border-color: var(--wro-blue); }
+    .member-box-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 5px; }
+    .member-box-name { font-size: 1rem; font-weight: 500; color: #111827; }
+
+    .version-tag { position: fixed; bottom: 85px; right: 15px; font-size: 10px; color: #9ca3af; background: rgba(255,255,255,0.9); padding: 4px 12px; border-radius: 20px; border: 1px solid #e5e7eb; z-index: 1000; }
+
+    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .dot-red { background-color: var(--wro-red); animation: blink 1s infinite; }
+    .dot-green { background-color: var(--wro-green); }
+    .text-red { color: var(--wro-red); }
+    .text-green { color: var(--wro-green); }
+    
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; width: 100%;
+      background: white;
+      padding: 12px 0;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+      z-index: 1000;
+    }
+    .footer-text { font-size: 0.85rem; color: #64748b; margin: 0; }
+    .footer-brand { font-weight: 600; color: #334155; }
+    .visitor-badge { font-size: 0.75rem; color: #475569; background: #e2e8f0; padding: 2px 8px; border-radius: 10px; margin-left: 5px; }
+
+    .schedule-header-title {
+      color: white;
+      padding: 12px 15px;
+      border-radius: 10px 10px 0 0;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+    .bg-round1 { background-color: var(--wro-blue); }
+    .bg-round2 { background-color: var(--wro-green); }
+    .table-schedule { font-size: 0.9rem; }
+    .table-schedule th { background: #f8fafc; color: #64748b; font-weight: 500; border-bottom: 2px solid #e2e8f0; }
+    
+    .current-team-highlight { 
+      background-color: #fef08a !important; 
+      color: #1e3a8a !important;
+      font-weight: 600 !important;
+      text-shadow: 2px 2px 4px rgba(30, 58, 138, 0.4), -1px -1px 0px #ffffff;
+    }
+    
+    .completed-match-text {
+      color: var(--wro-green) !important;
+      font-weight: 500;
+    }
+
+    .field-title-box {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #ffffff;
+      background: #475569;
+      padding: 6px 16px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-section">
+    <div class="system-status-box">
+      <span id="sysStatusDot" class="status-dot dot-red"></span>
+      <span id="sysStatusText">Connecting...</span>
+    </div>
+    <img src="https://img2.pic.in.th/Logo-WRO-2026-01bca9bfefae2e3f23.png" alt="WRO 2026 Logo" class="theme-logo">
+    <h2 class="app-title mb-0">WRO 2026</h2>
+    <h3 class="app-title mb-0">Seat & Results</h3>
+    <p class="text-muted opacity-80 mt-1">Robots Meet Culture</p>
+  </div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-9">
+        
+        <div class="card card-custom p-4 mb-4 shadow-sm border-0">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="search-label"><i class="fa-solid fa-layer-group text-success"></i>Category</label>
+              <select id="category" class="form-select form-select-lg" onchange="updateAgeGroups()">
+                <option value="">เลือกประเภท...</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="search-label"><i class="fa-solid fa-users-viewfinder text-success"></i>Age Group</label>
+              <select id="ageGroup" class="form-select form-select-lg" disabled onchange="updateTeamIDs()">
+                <option value="">เลือกอายุ...</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="search-label"><i class="fa-solid fa-id-card-clip text-success"></i>Team ID</label>
+              <select id="teamId" class="form-select form-select-lg" disabled onchange="autoSearch()">
+                <option value="">เลือกรหัสทีม...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultArea" style="display: none;">
+          <div class="card card-custom card-custom-green-border p-4 text-center mb-4">
+            <div class="result-label">ลำดับที่นั่ง / Seat Number</div>
+            <div id="seatDisplay" class="seat-display">--</div>
+            <h3 id="teamNameDisplay" class="team-name-display"></h3>
+            
+            <div class="extra-info-row text-start">
+              <div class="extra-info-label">สถาบัน / Institution</div>
+              <div id="institutionDisplay" class="extra-info-value">-</div>
+            </div>
+          </div>
+          
+          <div class="card card-custom p-4">
+            <h5 class="member-title">สมาชิกทีม (Team Members)</h5>
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div class="member-box">
+                  <span class="member-box-label text-primary">Coach</span>
+                  <div id="coachDisplay" class="member-box-name">-</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="member-box">
+                  <span class="member-box-label">Member 1</span>
+                  <div id="m1Display" class="member-box-name">-</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="member-box">
+                  <span class="member-box-label">Member 2</span>
+                  <div id="m2Display" class="member-box-name">-</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="member-box">
+                  <span class="member-box-label">Member 3</span>
+                  <div id="m3Display" class="member-box-name">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <br>
+          <div class="card card-custom p-4">
+            <h5 class="member-title">ผลการแข่งขัน (Result)</h5>
+            <div class="row g-2 mt-2">
+              <div class="col-6">
+                <div class="extra-info-row text-start">
+                  <div class="extra-info-label">Round 1 <span id="dot1" class="status-dot ms-1" style="display:none;"></span></div>
+                  <div id="r1Display" class="extra-info-value">-</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="extra-info-row text-start">
+                  <div class="extra-info-label">Round 2 <span id="dot2" class="status-dot ms-1" style="display:none;"></span></div>
+                  <div id="r2Display" class="extra-info-value">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="matchScheduleArea" class="mt-4" style="display: none;">
+            <div class="text-start mb-2">
+              <h5 class="member-title mb-0">ตารางแข่งขัน (Match Schedule)</h5>
+              <div id="fieldLabel" class="field-title-box">-</div>
+            </div>
+            
+            <div class="row g-3 mt-1">
+              <!-- ตาราง Round 1 -->
+              <div class="col-md-6">
+                <p class="schedule-header-title bg-round1"><i class="fa-solid fa-flag me-2"></i>Round 1</p>
+                <div class="card card-custom p-0 overflow-hidden border">
+                  <div class="table-responsive">
+                    <table class="table table-schedule align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th class="text-center" width="20%">Seat No.</th>
+                          <th width="30%">Team ID</th>
+                          <th width="50%">Team Name</th>
+                        </tr>
+                      </thead>
+                      <tbody id="round1TableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- ตาราง Round 2 -->
+              <div class="col-md-6">
+                <p class="schedule-header-title bg-round2"><i class="fa-solid fa-flag me-2"></i>Round 2</p>
+                <div class="card card-custom p-0 overflow-hidden border">
+                  <div class="table-responsive">
+                    <table class="table table-schedule align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th class="text-center" width="20%">Seat No.</th>
+                          <th width="30%">Team ID</th>
+                          <th width="50%">Team Name</th>
+                        </tr>
+                      </thead>
+                      <tbody id="round2TableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="version-tag">Version 2.8.6 (Match Schedule Fixed)</div>
+  <br>
+  <div class="d-flex justify-content-center">
+    <span class="visitor-badge"><i class="fa-solid fa-eye me-1"></i>Visitors: <span id="visitorCount">0</span></span>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p class="footer-text">Organized by <span class="footer-brand">Gammaco (Thailand) Co., LTD.</span></p>
+    </div>
+  </footer>
+
+  <script>
+  let allData = [];
+  // ลิงก์ API หลังบ้าน Web App ของคุณ
+  const API_URL = "https://script.google.com/macros/s/AKfycbyVJOiT4tndTnGOATGPOPHryDXqsz663ju2dbH8YqP_zqWvgkH7Ry5WR4-QG9VODIPf/exec?api=true"; 
+
+  window.onload = function() {
+    Swal.fire({
+      title: 'กำลังเชื่อมต่อข้อมูล...',
+      text: 'กรุณารอสักครู่',
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading() }
+    });
+
+    fetchDataFromServer(true);
+    startAutoRefresh(); 
+  };
+
+  function fetchDataFromServer(isFirstLoad = false) {
+    fetch(API_URL)
+      .then(response => response.json())
+      .then(res => {
+        allData = res.teams || res; 
+        if(res.visitors) {
+          document.getElementById('visitorCount').innerText = res.visitors;
+        }
+
+        document.getElementById('sysStatusDot').className = "status-dot dot-green";
+        document.getElementById('sysStatusText').innerText = "Connected & Ready";
+
+        if (isFirstLoad) {
+          populateCategories();
+          Swal.close();
+        } else if (document.getElementById('teamId').value) {
+          autoSearch(false); 
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('sysStatusDot').className = "status-dot dot-red";
+        document.getElementById('sysStatusText').innerText = "Disconnected";
+        if (isFirstLoad) {
+          Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อข้อมูลได้', 'error');
+        }
+      });
+  }
+
+  function populateCategories() {
+    const catSelect = document.getElementById('category');
+    const categories = [...new Set(allData.map(item => item.category))].filter(Boolean);
+    catSelect.innerHTML = '<option value="">เลือกประเภท...</option>'; 
+    categories.forEach(cat => catSelect.options.add(new Option(cat, cat)));
+  }
+
+  function updateAgeGroups() {
+    const catVal = document.getElementById('category').value;
+    const ageSelect = document.getElementById('ageGroup');
+    const teamSelect = document.getElementById('teamId');
+    ageSelect.innerHTML = '<option value="">เลือกอายุ...</option>';
+    teamSelect.innerHTML = '<option value="">เลือกรหัสทีม...</option>';
+    teamSelect.disabled = true;
+    clearDisplay(); 
+
+    if (catVal) {
+      const filteredAges = [...new Set(allData.filter(i => i.category === catVal).map(i => i.ageGroup))].filter(Boolean).sort();
+      filteredAges.forEach(age => ageSelect.options.add(new Option(age, age)));
+      ageSelect.disabled = false;
+    }
+  }
+
+  function updateTeamIDs() {
+    const catVal = document.getElementById('category').value;
+    const ageVal = document.getElementById('ageGroup').value;
+    const teamSelect = document.getElementById('teamId');
+    teamSelect.innerHTML = '<option value="">เลือกรหัสทีม...</option>';
+    clearDisplay();
+
+    if (ageVal) {
+      const filteredTeams = allData.filter(i => i.category === catVal && i.ageGroup === ageVal);
+      filteredTeams.forEach(team => teamSelect.options.add(new Option(team.teamId, team.teamId)));
+      teamSelect.disabled = false;
+    }
+  }
+
+  function autoSearch(isManual = true) {
+    const teamId = document.getElementById('teamId').value;
+    const category = document.getElementById('category').value;
+    const ageGroup = document.getElementById('ageGroup').value;
+
+    if (!teamId) {
+      clearDisplay();
+      return;
+    }
+
+    if (isManual) {
+      Swal.fire({ title: 'กำลังค้นหา...', timer: 500, showConfirmButton: false, didOpen: () => { Swal.showLoading() } });
+    }
+
+    const result = allData.find(i => i.teamId === teamId);
+    
+    const r1El = document.getElementById('r1Display');
+    const dot1 = document.getElementById('dot1');
+    const r2El = document.getElementById('r2Display');
+    const dot2 = document.getElementById('dot2');
+    
+    r1El.innerText = '-'; r2El.innerText = '-';
+    r1El.className = 'extra-info-value'; r2El.className = 'extra-info-value';
+    dot1.style.display = 'none'; dot2.style.display = 'none';
+
+    if (result) {
+      document.getElementById('seatDisplay').innerText = result.no || '-'; 
+      document.getElementById('teamNameDisplay').innerText = result.teamName;
+      document.getElementById('institutionDisplay').innerText = result.institution || '-';
+      document.getElementById('coachDisplay').innerText = result.coach || '-';
+      document.getElementById('m1Display').innerText = result.member1 || '-';
+      document.getElementById('m2Display').innerText = result.member2 || '-';
+      document.getElementById('m3Display').innerText = result.member3 || '-';
+
+      if (result.round1 !== undefined && result.round1 !== null && result.round1 !== "") {
+        r1El.innerText = result.round1;
+        dot1.style.display = 'inline-block';
+        const status = String(result.r1Status || '').trim().toLowerCase();
+        r1El.className = status === 'confirm' ? 'extra-info-value text-green' : 'extra-info-value text-red';
+        dot1.className = status === 'confirm' ? 'status-dot dot-green' : 'status-dot dot-red';
+      }
+
+      if (result.round2 !== undefined && result.round2 !== null && result.round2 !== "") {
+        r2El.innerText = result.round2;
+        dot2.style.display = 'inline-block';
+        const status = String(result.r2Status || '').trim().toLowerCase();
+        r2El.className = status === 'confirm' ? 'extra-info-value text-green' : 'extra-info-value text-red';
+        dot2.className = status === 'confirm' ? 'status-dot dot-green' : 'status-dot dot-red';
+      }
+
+      // ==========================================
+      // ตารางจัดการคิวแข่งขัน (Round 1 & Round 2)
+      // ==========================================
+      const r1Body = document.getElementById('round1TableBody');
+      const r2Body = document.getElementById('round2TableBody');
+      
+      if (r1Body && r2Body) {
+        r1Body.innerHTML = '';
+        r2Body.innerHTML = '';
+
+        // ดึงเฉพาะตัวอักษรภาษาอังกฤษตัวหน้าของ Seat No. ออกมาเพื่อใช้หากลุ่ม (เช่น A1 -> A)
+        const currentSeatStr = String(result.no || '').trim().toUpperCase();
+        const groupMatch = currentSeatStr.match(/^[A-Z]+/);
+        const targetGroup = groupMatch ? groupMatch[0] : '';
+
+        // อัปเดตหัวป้ายบอกสนามอ้างอิงจากตัวอักษรที่ดึงได้
+        document.getElementById('fieldLabel').innerText = category + " - " + ageGroup + (targetGroup ? " (Field: " + targetGroup + ")" : "");
+
+        // 1. กรองหาทีมที่อยู่ใน Field (Group) เดียวกัน
+        const filteredGroupTeams = allData.filter(item => {
+          let seatPrefix = '';
+          const match = String(item.no || '').trim().toUpperCase().match(/^[A-Z]+/); 
+          if (match) seatPrefix = match[0];
+          
+          return item.category === category && 
+                 item.ageGroup === ageGroup && 
+                 seatPrefix === targetGroup &&
+                 targetGroup !== ''; // ต้องมีกลุ่มที่ตรวจสอบได้
+        });
+
+        // 2. จัดการตาราง Round 1 (คัดเฉพาะทีมที่มีแข่ง Round 1 และเรียงตามคิวรอบ 1)
+        const round1Teams = filteredGroupTeams.filter(t => t.hasRound1).sort((a, b) => a.sortOrder - b.sortOrder);
+        
+        round1Teams.forEach(team => {
+          const isCurrentTeam = team.teamId === teamId ? 'class="current-team-highlight"' : '';
+          let activeRowStyle = isCurrentTeam;
+
+          r1Body.innerHTML += `
+            <tr ${isCurrentTeam}>
+              <td class="text-center font-weight-bold" ${activeRowStyle}>${team.no || '-'}</td>
+              <td ${activeRowStyle}>${team.teamId}</td>
+              <td ${activeRowStyle}>${team.teamName}</td>
+            </tr>
+          `;
+        });
+
+        // 3. จัดการตาราง Round 2 (คัดเฉพาะทีมที่มีแข่ง Round 2 และเรียงตามคิวรอบ 2)
+        const round2Teams = filteredGroupTeams.filter(t => t.hasRound2).sort((a, b) => a.sortOrderR2 - b.sortOrderR2);
+        
+        round2Teams.forEach(team => {
+          const isCurrentTeam = team.teamId === teamId ? 'class="current-team-highlight"' : '';
+          const isCompleted = team.newRound2Score !== undefined && team.newRound2Score !== null && team.newRound2Score !== "" ? 'class="completed-match-text"' : '';
+          let activeRowStyle = isCurrentTeam ? isCurrentTeam : isCompleted;
+
+          r2Body.innerHTML += `
+            <tr ${isCurrentTeam}>
+              <td class="text-center font-weight-bold" ${activeRowStyle}>${team.no || '-'}</td>
+              <td ${activeRowStyle}>${team.teamId}</td>
+              <td ${activeRowStyle}>${team.teamName}</td>
+            </tr>
+          `;
+        });
+
+        document.getElementById('matchScheduleArea').style.display = 'block';
+      }
+
+      document.getElementById('resultArea').style.display = 'block';
+    }
+  }
+
+  function clearDisplay() {
+    document.getElementById('resultArea').style.display = 'none';
+    document.getElementById('matchScheduleArea').style.display = 'none'; 
+    document.getElementById('seatDisplay').innerText = '--';
+  }
+
+  function startAutoRefresh() {
+    setInterval(() => {
+      fetchDataFromServer(false);
+    }, 60000); 
+  }
+</script>
+</body>
+</html>
