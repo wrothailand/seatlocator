@@ -4,7 +4,7 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WRO 2026 Seat & Results - Robots Meet Culture</title>
+  <title>WRO 2026 Seat & Schedules - Robots Meet Culture</title>
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -109,8 +109,6 @@
     .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
     .dot-red { background-color: var(--wro-red); animation: blink 1s infinite; }
     .dot-green { background-color: var(--wro-green); }
-    .text-red { color: var(--wro-red); }
-    .text-green { color: var(--wro-green); }
     
     footer {
       position: fixed;
@@ -171,7 +169,7 @@
     </div>
     <img src="https://img2.pic.in.th/Logo-WRO-2026-01bca9bfefae2e3f23.png" alt="WRO 2026 Logo" class="theme-logo">
     <h2 class="app-title mb-0">WRO 2026</h2>
-    <h3 class="app-title mb-0">Seat & Results</h3>
+    <h3 class="app-title mb-0">Seat & Schedules</h3>
     <p class="text-muted opacity-80 mt-1">Robots Meet Culture</p>
   </div>
 
@@ -243,25 +241,6 @@
               </div>
             </div>
           </div>
-          
-          <br>
-          <div class="card card-custom p-4">
-            <h5 class="member-title">ผลการแข่งขัน (Result)</h5>
-            <div class="row g-2 mt-2">
-              <div class="col-6">
-                <div class="extra-info-row text-start">
-                  <div class="extra-info-label">Round 1 <span id="dot1" class="status-dot ms-1" style="display:none;"></span></div>
-                  <div id="r1Display" class="extra-info-value">-</div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="extra-info-row text-start">
-                  <div class="extra-info-label">Round 2 <span id="dot2" class="status-dot ms-1" style="display:none;"></span></div>
-                  <div id="r2Display" class="extra-info-value">-</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <div id="matchScheduleArea" class="mt-4" style="display: none;">
             <div class="text-start mb-2">
@@ -270,7 +249,6 @@
             </div>
             
             <div class="row g-3 mt-1">
-              <!-- ตาราง Round 1 -->
               <div class="col-md-6">
                 <p class="schedule-header-title bg-round1"><i class="fa-solid fa-flag me-2"></i>Round 1</p>
                 <div class="card card-custom p-0 overflow-hidden border">
@@ -289,7 +267,6 @@
                 </div>
               </div>
               
-              <!-- ตาราง Round 2 -->
               <div class="col-md-6">
                 <p class="schedule-header-title bg-round2"><i class="fa-solid fa-flag me-2"></i>Round 2</p>
                 <div class="card card-custom p-0 overflow-hidden border">
@@ -330,7 +307,6 @@
 
   <script>
   let allData = [];
-  // ลิงก์ API หลังบ้าน Web App ของคุณ
   const API_URL = "https://script.google.com/macros/s/AKfycbyVJOiT4tndTnGOATGPOPHryDXqsz663ju2dbH8YqP_zqWvgkH7Ry5WR4-QG9VODIPf/exec?api=true"; 
 
   window.onload = function() {
@@ -426,15 +402,6 @@
     }
 
     const result = allData.find(i => i.teamId === teamId);
-    
-    const r1El = document.getElementById('r1Display');
-    const dot1 = document.getElementById('dot1');
-    const r2El = document.getElementById('r2Display');
-    const dot2 = document.getElementById('dot2');
-    
-    r1El.innerText = '-'; r2El.innerText = '-';
-    r1El.className = 'extra-info-value'; r2El.className = 'extra-info-value';
-    dot1.style.display = 'none'; dot2.style.display = 'none';
 
     if (result) {
       document.getElementById('seatDisplay').innerText = result.no || '-'; 
@@ -444,22 +411,6 @@
       document.getElementById('m1Display').innerText = result.member1 || '-';
       document.getElementById('m2Display').innerText = result.member2 || '-';
       document.getElementById('m3Display').innerText = result.member3 || '-';
-
-      if (result.round1 !== undefined && result.round1 !== null && result.round1 !== "") {
-        r1El.innerText = result.round1;
-        dot1.style.display = 'inline-block';
-        const status = String(result.r1Status || '').trim().toLowerCase();
-        r1El.className = status === 'confirm' ? 'extra-info-value text-green' : 'extra-info-value text-red';
-        dot1.className = status === 'confirm' ? 'status-dot dot-green' : 'status-dot dot-red';
-      }
-
-      if (result.round2 !== undefined && result.round2 !== null && result.round2 !== "") {
-        r2El.innerText = result.round2;
-        dot2.style.display = 'inline-block';
-        const status = String(result.r2Status || '').trim().toLowerCase();
-        r2El.className = status === 'confirm' ? 'extra-info-value text-green' : 'extra-info-value text-red';
-        dot2.className = status === 'confirm' ? 'status-dot dot-green' : 'status-dot dot-red';
-      }
 
       // ==========================================
       // ตารางจัดการคิวแข่งขัน (Round 1 & Round 2)
@@ -471,15 +422,12 @@
         r1Body.innerHTML = '';
         r2Body.innerHTML = '';
 
-        // ดึงเฉพาะตัวอักษรภาษาอังกฤษตัวหน้าของ Seat No. ออกมาเพื่อใช้หากลุ่ม (เช่น A1 -> A)
         const currentSeatStr = String(result.no || '').trim().toUpperCase();
         const groupMatch = currentSeatStr.match(/^[A-Z]+/);
         const targetGroup = groupMatch ? groupMatch[0] : '';
 
-        // อัปเดตหัวป้ายบอกสนามอ้างอิงจากตัวอักษรที่ดึงได้
         document.getElementById('fieldLabel').innerText = category + " - " + ageGroup + (targetGroup ? " (Field: " + targetGroup + ")" : "");
 
-        // 1. กรองหาทีมที่อยู่ใน Field (Group) เดียวกัน
         const filteredGroupTeams = allData.filter(item => {
           let seatPrefix = '';
           const match = String(item.no || '').trim().toUpperCase().match(/^[A-Z]+/); 
@@ -488,10 +436,10 @@
           return item.category === category && 
                  item.ageGroup === ageGroup && 
                  seatPrefix === targetGroup &&
-                 targetGroup !== ''; // ต้องมีกลุ่มที่ตรวจสอบได้
+                 targetGroup !== '';
         });
 
-        // 2. จัดการตาราง Round 1 (คัดเฉพาะทีมที่มีแข่ง Round 1 และเรียงตามคิวรอบ 1)
+        // 1. จัดการตาราง Round 1
         const round1Teams = filteredGroupTeams.filter(t => t.hasRound1).sort((a, b) => a.sortOrder - b.sortOrder);
         
         round1Teams.forEach(team => {
@@ -507,7 +455,7 @@
           `;
         });
 
-        // 3. จัดการตาราง Round 2 (คัดเฉพาะทีมที่มีแข่ง Round 2 และเรียงตามคิวรอบ 2)
+        // 2. จัดการตาราง Round 2
         const round2Teams = filteredGroupTeams.filter(t => t.hasRound2).sort((a, b) => a.sortOrderR2 - b.sortOrderR2);
         
         round2Teams.forEach(team => {
