@@ -18,7 +18,14 @@
       --wro-red: #eb1515;
     }
 
-    body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; color: #334155; padding-bottom: 120px; }
+    /* ขยายฟอนต์ภาพรวมของ body จากเดิม 1rem เป็น 1.1rem (ประมาณ 17.5px) */
+    body { 
+      font-family: 'Kanit', sans-serif; 
+      background-color: #f8fafc; 
+      color: #334155; 
+      padding-bottom: 120px; 
+      font-size: 1.1rem; 
+    }
     
     .header-section { 
       position: relative;
@@ -39,41 +46,46 @@
       top: 15px;
       right: 15px;
       background: rgba(0, 0, 0, 0.4);
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.9rem; /* ปรับขนาดสถานะระบบ */
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
     .theme-logo { 
-      max-width: 140px; 
+      max-width: 150px; /* ขยายโลโก้เล็กน้อยให้สมดุล */
       height: auto; 
       margin-bottom: 15px; 
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); 
     }
 
     .app-title { font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .header-section .text-muted { color: rgba(255, 255, 255, 0.8) !important; }
+    .header-section h2.app-title { font-size: 2.2rem; }
+    .header-section h3.app-title { font-size: 1.8rem; }
+    .header-section .text-muted { font-size: 1.1rem; color: rgba(255, 255, 255, 0.8) !important; }
 
     .card-custom { border: none; border-radius: 1.25rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); background: white; }
     .card-custom-green-border { border-top: 6px solid var(--wro-blue); }
     
+    /* ขยายขนาด Label ค้นหา */
     .search-label {
       font-weight: 500;
       color: #475569;
       display: flex;
       align-items: center;
-      font-size: 0.95rem;
+      font-size: 1.1rem;
       margin-bottom: 0.75rem;
     }
-    .search-label i { width: 25px; text-align: center; font-size: 1.1rem; }
+    .search-label i { width: 28px; text-align: center; font-size: 1.25rem; }
 
+    /* ขยายฟอนต์ในกล่อง Select Box */
     .form-select-lg {
-      font-size: 1rem;
+      font-size: 1.15rem;
+      padding: 0.6rem 1rem;
       border: 1px solid #e2e8f0;
-      border-radius: 10px !important;
+      border-radius: 12px !important;
       transition: all 0.2s;
     }
     .form-select-lg:focus {
@@ -81,15 +93,15 @@
       box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.1);
     }
 
-    .result-label { font-size: 0.85rem; color: var(--wro-blue); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
-    .seat-display { font-size: 3.5rem; font-weight: 800; color: var(--wro-red); margin: 5px 0; }
-    .team-name-display { color: #0f172a; font-weight: 600; margin-bottom: 15px; }
+    .result-label { font-size: 1rem; color: var(--wro-blue); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+    .seat-display { font-size: 4rem; font-weight: 800; color: var(--wro-red); margin: 5px 0; }
+    .team-name-display { font-size: 1.6rem; color: #0f172a; font-weight: 600; margin-bottom: 15px; }
     
-    .extra-info-row { background: #f1f5f9; padding: 15px; border-radius: 12px; }
-    .extra-info-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
-    .extra-info-value { font-size: 1.1rem; color: #111827; font-weight: 500; }
+    .extra-info-row { background: #f1f5f9; padding: 18px; border-radius: 12px; }
+    .extra-info-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
+    .extra-info-value { font-size: 1.25rem; color: #111827; font-weight: 500; }
 
-    .member-title { color: var(--wro-blue); font-weight: 600; border-left: 5px solid var(--wro-blue); padding-left: 10px; margin-bottom: 20px; }
+    .member-title { font-size: 1.3rem; color: var(--wro-blue); font-weight: 600; border-left: 5px solid var(--wro-blue); padding-left: 12px; margin-bottom: 20px; }
     .member-box { 
       background: white; 
       border: 1px solid #e2e8f0; 
@@ -100,13 +112,13 @@
       transition: transform 0.2s;
     }
     .member-box:hover { transform: translateY(-3px); border-color: var(--wro-blue); }
-    .member-box-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 5px; }
-    .member-box-name { font-size: 1rem; font-weight: 500; color: #111827; }
+    .member-box-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 6px; }
+    .member-box-name { font-size: 1.15rem; font-weight: 500; color: #111827; }
 
-    .version-tag { position: fixed; bottom: 85px; right: 15px; font-size: 10px; color: #9ca3af; background: rgba(255,255,255,0.9); padding: 4px 12px; border-radius: 20px; border: 1px solid #e5e7eb; z-index: 1000; }
+    .version-tag { position: fixed; bottom: 85px; right: 15px; font-size: 11px; color: #9ca3af; background: rgba(255,255,255,0.9); padding: 4px 12px; border-radius: 20px; border: 1px solid #e5e7eb; z-index: 1000; }
 
     @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
-    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .status-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
     .dot-red { background-color: var(--wro-red); animation: blink 1s infinite; }
     .dot-green { background-color: var(--wro-green); }
     
@@ -114,27 +126,30 @@
       position: fixed;
       bottom: 0; left: 0; width: 100%;
       background: white;
-      padding: 12px 0;
+      padding: 14px 0;
       border-top: 1px solid #e2e8f0;
       text-align: center;
       z-index: 1000;
     }
-    .footer-text { font-size: 0.85rem; color: #64748b; margin: 0; }
+    .footer-text { font-size: 0.95rem; color: #64748b; margin: 0; }
     .footer-brand { font-weight: 600; color: #334155; }
-    .visitor-badge { font-size: 0.75rem; color: #475569; background: #e2e8f0; padding: 2px 8px; border-radius: 10px; margin-left: 5px; }
+    .visitor-badge { font-size: 0.85rem; color: #475569; background: #e2e8f0; padding: 3px 10px; border-radius: 10px; margin-left: 5px; }
 
     .schedule-header-title {
       color: white;
-      padding: 12px 15px;
+      padding: 14px 18px;
       border-radius: 10px 10px 0 0;
-      font-size: 1rem;
+      font-size: 1.15rem;
       font-weight: 500;
       margin-bottom: 0;
     }
     .bg-round1 { background-color: var(--wro-blue); }
     .bg-round2 { background-color: var(--wro-green); }
-    .table-schedule { font-size: 0.9rem; }
-    .table-schedule th { background: #f8fafc; color: #64748b; font-weight: 500; border-bottom: 2px solid #e2e8f0; }
+    
+    /* ปรับขนาดฟอนต์ของตารางคิวแข่งขันเพิ่มขึ้น */
+    .table-schedule { font-size: 1.05rem; }
+    .table-schedule th { background: #f8fafc; color: #64748b; font-weight: 500; border-bottom: 2px solid #e2e8f0; padding: 10px; }
+    .table-schedule td { padding: 12px 10px; }
     
     .current-team-highlight { 
       background-color: #fef08a !important; 
@@ -149,11 +164,11 @@
     }
 
     .field-title-box {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 500;
       color: #ffffff;
       background: #475569;
-      padding: 6px 16px;
+      padding: 8px 18px;
       border-radius: 8px;
       display: inline-block;
       margin-top: 8px;
@@ -256,9 +271,9 @@
                     <table class="table table-schedule align-middle mb-0">
                       <thead>
                         <tr>
-                          <th class="text-center" width="20%">Seat No.</th>
+                          <th class="text-center" width="25%">Seat No.</th>
                           <th width="30%">Team ID</th>
-                          <th width="50%">Team Name</th>
+                          <th width="45%">Team Name</th>
                         </tr>
                       </thead>
                       <tbody id="round1TableBody"></tbody>
@@ -274,9 +289,9 @@
                     <table class="table table-schedule align-middle mb-0">
                       <thead>
                         <tr>
-                          <th class="text-center" width="20%">Seat No.</th>
+                          <th class="text-center" width="25%">Seat No.</th>
                           <th width="30%">Team ID</th>
-                          <th width="50%">Team Name</th>
+                          <th width="45%">Team Name</th>
                         </tr>
                       </thead>
                       <tbody id="round2TableBody"></tbody>
@@ -412,9 +427,6 @@
       document.getElementById('m2Display').innerText = result.member2 || '-';
       document.getElementById('m3Display').innerText = result.member3 || '-';
 
-      // ==========================================
-      // ตารางจัดการคิวแข่งขัน (Round 1 & Round 2)
-      // ==========================================
       const r1Body = document.getElementById('round1TableBody');
       const r2Body = document.getElementById('round2TableBody');
       
