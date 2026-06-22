@@ -5,503 +5,1001 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WRO 2026 Seat & Schedules - Robots Meet Culture</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    :root {
-      --wro-blue: #39a8df;
-      --wro-green: #10b981;
-      --wro-red: #eb1515;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .wro-app {
+      font-family: 'Kanit', sans-serif;
+      background: linear-gradient(135deg, #1a0533 0%, #0d1f6b 40%, #0a3d6b 70%, #063d5c 100%);
+      min-height: 100vh;
+      padding-bottom: 80px;
+      color: #fff;
     }
 
-    /* ขยายฟอนต์ภาพรวมของ body จากเดิม 1rem เป็น 1.1rem (ประมาณ 17.5px) */
-    body { 
-      font-family: 'Kanit', sans-serif; 
-      background-color: #f8fafc; 
-      color: #334155; 
-      padding-bottom: 120px; 
-      font-size: 1.1rem; 
-    }
-    
-    .header-section { 
-      position: relative;
-      text-align: center; 
-      padding: 60px 15px; 
-      margin-bottom: 30px;
-      background: linear-gradient(rgba(5, 150, 105, 0.85), rgba(6, 95, 70, 0.9)), 
-                  url('https://www.wro-association.org/wp-content/uploads/2023/12/banner-bg.jpg');
-      background-size: cover;
-      background-position: center;
-      border-radius: 0 0 2rem 2rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      color: white;
-    }
-
-    .system-status-box {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 6px 14px;
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
-      font-size: 0.9rem; /* ปรับขนาดสถานะระบบ */
+    }
+
+    .glass-light {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+    }
+
+    /* ===== HEADER ===== */
+    .header-section {
+      position: relative;
+      text-align: center;
+      padding: 52px 20px 44px;
+      overflow: hidden;
+    }
+
+    .header-section::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(139,92,246,0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-section::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -40px;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(56,189,248,0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .status-pill {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 5px 14px;
+      border-radius: 30px;
+      font-size: 0.82rem;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      backdrop-filter: blur(8px);
     }
 
-    .theme-logo { 
-      max-width: 150px; /* ขยายโลโก้เล็กน้อยให้สมดุล */
-      height: auto; 
-      margin-bottom: 15px; 
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); 
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .dot-red { background: #ef4444; animation: blink 1s infinite; }
+    .dot-green { background: #22c55e; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    .theme-logo {
+      max-width: 130px;
+      height: auto;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 4px 16px rgba(139,92,246,0.5));
     }
 
-    .app-title { font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .header-section h2.app-title { font-size: 2.2rem; }
-    .header-section h3.app-title { font-size: 1.8rem; }
-    .header-section .text-muted { font-size: 1.1rem; color: rgba(255, 255, 255, 0.8) !important; }
+    .app-title-main { font-size: 2rem; font-weight: 600; letter-spacing: 0.02em; text-shadow: 0 2px 12px rgba(139,92,246,0.4); }
+    .app-title-sub  { font-size: 1.55rem; font-weight: 500; color: rgba(255,255,255,0.85); }
+    .app-tagline    { font-size: 0.95rem; color: rgba(255,255,255,0.6); margin-top: 6px; }
 
-    .card-custom { border: none; border-radius: 1.25rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); background: white; }
-    .card-custom-green-border { border-top: 6px solid var(--wro-blue); }
-    
-    /* ขยายขนาด Label ค้นหา */
-    .search-label {
+    /* ===== LAYOUT ===== */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+    /* ===== SEARCH CARD ===== */
+    .search-card { padding: 28px 24px; margin: 24px 0 20px; }
+    .search-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 600px) { .search-row { grid-template-columns: 1fr; } }
+
+    .field-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 8px;
       font-weight: 500;
-      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .field-group label i { font-size: 1rem; color: #a78bfa; }
+
+    select {
+      width: 100%;
+      padding: 10px 36px 10px 14px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Kanit', sans-serif;
+      font-size: 1rem;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.5)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    select:focus   { outline: none; border-color: #a78bfa; background-color: rgba(255,255,255,0.15); }
+    select:disabled { opacity: 0.45; cursor: not-allowed; }
+    select option  { background: #1e1b4b; color: #fff; }
+
+    /* ===== FLOOR PLAN ===== */
+    .floor-plan-card { padding: 20px; margin-bottom: 20px; }
+    .floor-plan-header {
       display: flex;
       align-items: center;
-      font-size: 1.1rem;
-      margin-bottom: 0.75rem;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .search-label i { width: 28px; text-align: center; font-size: 1.25rem; }
 
-    /* ขยายฟอนต์ในกล่อง Select Box */
-    .form-select-lg {
-      font-size: 1.15rem;
-      padding: 0.6rem 1rem;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px !important;
+    .floor-plan-title {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.65);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .floor-plan-title i { color: #7dd3fc; font-size: 1rem; }
+
+    .zoom-controls { display: flex; align-items: center; gap: 8px; }
+    .zoom-controls i { font-size: 1rem; color: rgba(255,255,255,0.5); cursor: pointer; }
+    .zoom-controls i:hover { color: #a78bfa; }
+
+    .zoom-label {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      min-width: 40px;
+      text-align: right;
+    }
+
+    input[type=range].zoom-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 120px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range].zoom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #a78bfa;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,0.6);
+    }
+    input[type=range].zoom-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #a78bfa;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,0.6);
+    }
+
+    .floor-plan-img-wrap {
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.25);
+      min-height: 180px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
       transition: all 0.2s;
     }
-    .form-select-lg:focus {
-      border-color: var(--wro-green);
-      box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.1);
+
+    .floor-plan-img-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.2s ease;
+      transform-origin: center top;
     }
 
-    .result-label { font-size: 1rem; color: var(--wro-blue); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
-    .seat-display { font-size: 4rem; font-weight: 800; color: var(--wro-red); margin: 5px 0; }
-    .team-name-display { font-size: 1.6rem; color: #0f172a; font-weight: 600; margin-bottom: 15px; }
-    
-    .extra-info-row { background: #f1f5f9; padding: 18px; border-radius: 12px; }
-    .extra-info-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
-    .extra-info-value { font-size: 1.25rem; color: #111827; font-weight: 500; }
-
-    .member-title { font-size: 1.3rem; color: var(--wro-blue); font-weight: 600; border-left: 5px solid var(--wro-blue); padding-left: 12px; margin-bottom: 20px; }
-    .member-box { 
-      background: white; 
-      border: 1px solid #e2e8f0; 
-      border-radius: 1rem; 
-      padding: 1.25rem; 
-      height: 100%; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
-      transition: transform 0.2s;
+    .coming-soon-box { text-align: center; padding: 48px 20px; width: 100%; }
+    .coming-soon-box i { font-size: 2.8rem; color: rgba(255,255,255,0.22); display: block; margin-bottom: 14px; }
+    .coming-soon-box p { color: rgba(255,255,255,0.45); font-size: 1rem; }
+    .coming-soon-badge {
+      display: inline-block;
+      background: rgba(167,139,250,0.18);
+      border: 1px solid rgba(167,139,250,0.38);
+      color: #c4b5fd;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      letter-spacing: 0.08em;
     }
-    .member-box:hover { transform: translateY(-3px); border-color: var(--wro-blue); }
-    .member-box-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 6px; }
-    .member-box-name { font-size: 1.15rem; font-weight: 500; color: #111827; }
 
-    .version-tag { position: fixed; bottom: 85px; right: 15px; font-size: 11px; color: #9ca3af; background: rgba(255,255,255,0.9); padding: 4px 12px; border-radius: 20px; border: 1px solid #e5e7eb; z-index: 1000; }
+    /* ===== RESULT CARD ===== */
+    .result-card {
+      position: relative;
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      border-top: 3px solid rgba(167,139,250,0.6);
+    }
 
-    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
-    .status-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
-    .dot-red { background-color: var(--wro-red); animation: blink 1s infinite; }
-    .dot-green { background-color: var(--wro-green); }
-    
+    .btn-copy-link {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #e0e7ff;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-copy-link:hover {
+      background: rgba(167, 139, 250, 0.2);
+      border-color: rgba(167, 139, 250, 0.5);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .result-label-top {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #7dd3fc;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .seat-number {
+      font-size: 5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f472b6, #fb7185);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      margin: 4px 0;
+    }
+
+    .team-name-big { font-size: 1.45rem; font-weight: 600; color: #fff; margin: 12px 0 18px; }
+
+    .info-strip {
+      background: rgba(0,0,0,0.25);
+      border-radius: 12px;
+      padding: 14px 18px;
+      text-align: left;
+    }
+    .info-strip-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .info-strip-value { font-size: 1.05rem; color: #e0e7ff; }
+
+    /* ===== MEMBERS ===== */
+    .member-section { padding: 24px; margin-bottom: 20px; }
+    .section-heading {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.6);
+      border-left: 3px solid #7dd3fc;
+      padding-left: 10px;
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+
+    .member-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 600px) { .member-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .member-box {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 14px;
+      padding: 14px 12px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .member-box:hover { border-color: rgba(167,139,250,0.5); transform: translateY(-3px); }
+    .member-role { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: #93c5fd; margin-bottom: 5px; }
+    .member-name { font-size: 0.97rem; color: #e0e7ff; font-weight: 500; }
+
+    /* ===== SCHEDULE ===== */
+    .schedule-section { margin-bottom: 20px; }
+    .schedule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .schedule-grid { grid-template-columns: 1fr; } }
+
+    .round-card { border-radius: 16px; overflow: hidden; }
+    .round-header {
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .round-header.r1 { background: rgba(56,189,248,0.22); border-bottom: 1px solid rgba(56,189,248,0.28); }
+    .round-header.r2 { background: rgba(52,211,153,0.2); border-bottom: 1px solid rgba(52,211,153,0.28); }
+    .round-header.r1 i { color: #7dd3fc; }
+    .round-header.r2 i { color: #6ee7b7; }
+
+    .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .schedule-table th {
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.45);
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .schedule-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.82); }
+    .schedule-table tr:last-child td { border-bottom: none; }
+    .schedule-table tr.highlight td {
+      background: rgba(253,224,71,0.15) !important;
+      color: #fef08a !important;
+      font-weight: 600;
+    }
+
+    .field-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 14px;
+    }
+
+    /* ===== VISITOR / FOOTER ===== */
+    .visitor-row { text-align: center; margin: 12px 0; }
+    .visitor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.65);
+    }
+
     footer {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
-      background: white;
-      padding: 14px 0;
-      border-top: 1px solid #e2e8f0;
+      background: rgba(10,15,60,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.1);
       text-align: center;
-      z-index: 1000;
+      padding: 12px;
+      z-index: 100;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.55);
     }
-    .footer-text { font-size: 0.95rem; color: #64748b; margin: 0; }
-    .footer-brand { font-weight: 600; color: #334155; }
-    .visitor-badge { font-size: 0.85rem; color: #475569; background: #e2e8f0; padding: 3px 10px; border-radius: 10px; margin-left: 5px; }
+    footer span { color: rgba(255,255,255,0.8); font-weight: 500; }
 
-    .schedule-header-title {
-      color: white;
-      padding: 14px 18px;
-      border-radius: 10px 10px 0 0;
-      font-size: 1.15rem;
-      font-weight: 500;
-      margin-bottom: 0;
-    }
-    .bg-round1 { background-color: var(--wro-blue); }
-    .bg-round2 { background-color: var(--wro-green); }
-    
-    /* ปรับขนาดฟอนต์ของตารางคิวแข่งขันเพิ่มขึ้น */
-    .table-schedule { font-size: 1.05rem; }
-    .table-schedule th { background: #f8fafc; color: #64748b; font-weight: 500; border-bottom: 2px solid #e2e8f0; padding: 10px; }
-    .table-schedule td { padding: 12px 10px; }
-    
-    .current-team-highlight { 
-      background-color: #fef08a !important; 
-      color: #1e3a8a !important;
-      font-weight: 600 !important;
-      text-shadow: 2px 2px 4px rgba(30, 58, 138, 0.4), -1px -1px 0px #ffffff;
-    }
-    
-    .completed-match-text {
-      color: var(--wro-green) !important;
-      font-weight: 500;
+    .version-tag {
+      position: fixed;
+      bottom: 52px; right: 12px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.3);
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      z-index: 200;
+      backdrop-filter: blur(8px);
     }
 
-    .field-title-box {
-      font-size: 1.2rem;
-      font-weight: 500;
-      color: #ffffff;
-      background: #475569;
-      padding: 8px 18px;
-      border-radius: 8px;
-      display: inline-block;
-      margin-top: 8px;
-    }
+    #floorPlanImgWrap {
+  width: 100%;
+  max-height: 70vh; /* หรือตามความสูงเดิมของคุณ */
+  overflow: auto;   /* ให้เกิด Scrollbar อัตโนมัติเมื่อขยายภาพ */
+  position: relative;
+  cursor: grab;     /* เปลี่ยนเมาส์เป็นรูปมือ */
+  user-select: none;
+  -webkit-user-select: none;
+  background: #111827; /* สีพื้นหลังเข้มป้องกันภาพกลืน */
+}
+
+#floorPlanImgWrap:active {
+  cursor: grabbing; /* เมื่อคลิกค้างจะเปลี่ยนเป็นรูปกำมือ */
+}
+
+#floorPlanImgWrap img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  transform-origin: top center;
+  transition: transform 0.1s ease-out; /* เพิ่มความนุ่มนวลเวลาซูม */
+}
   </style>
 </head>
 <body>
 
+<div class="wro-app">
+
   <div class="header-section">
-    <div class="system-status-box">
-      <span id="sysStatusDot" class="status-dot dot-red"></span>
+    <div class="status-pill">
+      <span id="sysStatusDot" class="dot dot-red"></span>
       <span id="sysStatusText">Connecting...</span>
     </div>
-    <img src="https://img2.pic.in.th/Logo-WRO-2026-01bca9bfefae2e3f23.png" alt="WRO 2026 Logo" class="theme-logo">
-    <h2 class="app-title mb-0">WRO 2026</h2>
-    <h3 class="app-title mb-0">Seat & Schedules</h3>
-    <p class="text-muted opacity-80 mt-1">Robots Meet Culture</p>
+    <img src="https://img2.pic.in.th/Logo-WRO-2026-01bca9bfefae2e3f23.png" alt="WRO 2026 Logo" class="theme-logo" onerror="this.style.display='none'">
+    <div class="app-title-main">WRO 2026</div>
+    <div class="app-title-sub">Seat &amp; Schedules</div>
+    <div class="app-tagline">Robots Meet Culture</div>
   </div>
 
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-10 col-xl-9">
-        
-        <div class="card card-custom p-4 mb-4 shadow-sm border-0">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="search-label"><i class="fa-solid fa-layer-group text-success"></i>Category</label>
-              <select id="category" class="form-select form-select-lg" onchange="updateAgeGroups()">
-                <option value="">เลือกภูมิภาค/ประเภท...</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="search-label"><i class="fa-solid fa-users-viewfinder text-success"></i>Age Group</label>
-              <select id="ageGroup" class="form-select form-select-lg" disabled onchange="updateTeamIDs()">
-                <option value="">เลือกอายุ...</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="search-label"><i class="fa-solid fa-id-card-clip text-success"></i>Team ID</label>
-              <select id="teamId" class="form-select form-select-lg" disabled onchange="autoSearch()">
-                <option value="">เลือกรหัสทีม...</option>
-              </select>
-            </div>
-          </div>
+
+    <div class="glass search-card">
+      <div class="search-row">
+        <div class="field-group">
+          <label><i class="ti ti-layout-grid" aria-hidden="true"></i> Category</label>
+          <select id="category" onchange="updateAgeGroups()">
+            <option value="">เลือกประเภท...</option>
+          </select>
         </div>
-
-        <div id="resultArea" style="display: none;">
-          <div class="card card-custom card-custom-green-border p-4 text-center mb-4">
-            <div class="result-label">ลำดับที่นั่ง / Seat Number</div>
-            <div id="seatDisplay" class="seat-display">--</div>
-            <h3 id="teamNameDisplay" class="team-name-display"></h3>
-            
-            <div class="extra-info-row text-start">
-              <div class="extra-info-label">สถาบัน / Institution</div>
-              <div id="institutionDisplay" class="extra-info-value">-</div>
-            </div>
-          </div>
-          
-          <div class="card card-custom p-4">
-            <h5 class="member-title">สมาชิกทีม (Team Members)</h5>
-            <div class="row g-3">
-              <div class="col-6 col-md-3">
-                <div class="member-box">
-                  <span class="member-box-label text-primary">Coach</span>
-                  <div id="coachDisplay" class="member-box-name">-</div>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="member-box">
-                  <span class="member-box-label">Member 1</span>
-                  <div id="m1Display" class="member-box-name">-</div>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="member-box">
-                  <span class="member-box-label">Member 2</span>
-                  <div id="m2Display" class="member-box-name">-</div>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="member-box">
-                  <span class="member-box-label">Member 3</span>
-                  <div id="m3Display" class="member-box-name">-</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div id="matchScheduleArea" class="mt-4" style="display: none;">
-            <div class="text-start mb-2">
-              <h5 class="member-title mb-0">ตารางแข่งขัน (Match Schedule)</h5>
-              <div id="fieldLabel" class="field-title-box">-</div>
-            </div>
-            
-            <div class="row g-3 mt-1">
-              <div class="col-md-6">
-                <p class="schedule-header-title bg-round1"><i class="fa-solid fa-flag me-2"></i>Round 1</p>
-                <div class="card card-custom p-0 overflow-hidden border">
-                  <div class="table-responsive">
-                    <table class="table table-schedule align-middle mb-0">
-                      <thead>
-                        <tr>
-                          <th class="text-center" width="25%">Seat No.</th>
-                          <th width="30%">Team ID</th>
-                          <th width="45%">Team Name</th>
-                        </tr>
-                      </thead>
-                      <tbody id="round1TableBody"></tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="col-md-6">
-                <p class="schedule-header-title bg-round2"><i class="fa-solid fa-flag me-2"></i>Round 2</p>
-                <div class="card card-custom p-0 overflow-hidden border">
-                  <div class="table-responsive">
-                    <table class="table table-schedule align-middle mb-0">
-                      <thead>
-                        <tr>
-                          <th class="text-center" width="25%">Seat No.</th>
-                          <th width="30%">Team ID</th>
-                          <th width="45%">Team Name</th>
-                        </tr>
-                      </thead>
-                      <tbody id="round2TableBody"></tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+        <div class="field-group">
+          <label><i class="ti ti-users" aria-hidden="true"></i> Age Group</label>
+          <select id="ageGroup" onchange="updateTeamIDs()">
+            <option value="">เลือกอายุ...</option>
+          </select>
         </div>
-
+        <div class="field-group">
+          <label><i class="ti ti-id-badge" aria-hidden="true"></i> Team ID</label>
+          <select id="teamId" onchange="autoSearch(true)">
+            <option value="">เลือกรหัสทีม...</option>
+          </select>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="version-tag">Version 2.8.6 (Match Schedule Fixed)</div>
-  <br>
-  <div class="d-flex justify-content-center">
-    <span class="visitor-badge"><i class="fa-solid fa-eye me-1"></i>Visitors: <span id="visitorCount">0</span></span>
-  </div>
-
-  <footer>
-    <div class="container">
-      <p class="footer-text">Organized by <span class="footer-brand">Gammaco (Thailand) Co., LTD.</span></p>
+    <div id="floorPlanArea" style="display:none;">
+      <div class="glass floor-plan-card">
+        <div class="floor-plan-header">
+          <div class="floor-plan-title">
+            <i class="ti ti-map" aria-hidden="true"></i>
+            Floor Plan
+          </div>
+          <div class="zoom-controls" id="zoomControls" style="display:none;">
+            <i class="ti ti-zoom-out" aria-hidden="true" onclick="setZoom(Math.max(50, zoomVal - 10))"></i>
+            <input type="range" class="zoom-slider" id="zoomSlider" min="50" max="200" value="100" step="5" oninput="setZoom(this.value)">
+            <i class="ti ti-zoom-in" aria-hidden="true" onclick="setZoom(Math.min(200, zoomVal + 10))"></i>
+            <span class="zoom-label" id="zoomLabel">100%</span>
+          </div>
+        </div>
+        <div class="floor-plan-img-wrap" id="floorPlanImgWrap">
+          <div class="coming-soon-box">
+            <i class="ti ti-photo-off" aria-hidden="true"></i>
+            <p>เลือก Category เพื่อดู Floor Plan</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
 
-  <script>
-  let allData = [];
-  const API_URL = "https://script.google.com/macros/s/AKfycbyVJOiT4tndTnGOATGPOPHryDXqsz663ju2dbH8YqP_zqWvgkH7Ry5WR4-QG9VODIPf/exec?api=true"; 
+    <div id="resultArea" style="display:none;">
 
+      <div class="glass result-card">
+        <button class="btn-copy-link" onclick="copyShareLink()" title="คัดลอกลิงก์ของทีมนี้">
+          <i class="ti ti-link" aria-hidden="true"></i>
+        </button>
+        <div class="result-label-top">ลำดับที่นั่ง / Seat Number</div>
+        <div id="seatDisplay" class="seat-number">--</div>
+        <h3 id="teamNameDisplay" class="team-name-big"></h3>
+        <div class="info-strip">
+          <div class="info-strip-label">สถาบัน / Institution</div>
+          <div id="institutionDisplay" class="info-strip-value">-</div>
+        </div>
+      </div>
+
+      <div class="glass member-section">
+        <div class="section-heading">สมาชิกทีม (Team Members)</div>
+        <div class="member-grid">
+          <div class="member-box">
+            <div class="member-role" style="color:#93c5fd;">Coach</div>
+            <div id="coachDisplay" class="member-name">-</div>
+          </div>
+          <div class="member-box">
+            <div class="member-role">Member 1</div>
+            <div id="m1Display" class="member-name">-</div>
+          </div>
+          <div class="member-box">
+            <div class="member-role">Member 2</div>
+            <div id="m2Display" class="member-name">-</div>
+          </div>
+          <div class="member-box">
+            <div class="member-role">Member 3</div>
+            <div id="m3Display" class="member-name">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="matchScheduleArea" class="schedule-section" style="display:none;">
+        <div class="glass" style="padding:20px;">
+          <div class="section-heading" style="margin-bottom:10px;">ตารางแข่งขัน (Match Schedule)</div>
+          <div id="fieldLabel" class="field-badge">-</div>
+          <div class="schedule-grid">
+            <div class="round-card glass-light">
+              <div class="round-header r1"><i class="ti ti-flag" aria-hidden="true"></i> Round 1</div>
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th style="width:28%">Seat</th>
+                    <th style="width:28%">Team ID</th>
+                    <th>Team Name</th>
+                  </tr>
+                </thead>
+                <tbody id="round1TableBody"></tbody>
+              </table>
+            </div>
+            <div class="round-card glass-light">
+              <div class="round-header r2"><i class="ti ti-flag" aria-hidden="true"></i> Round 2</div>
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th style="width:28%">Seat</th>
+                    <th style="width:28%">Team ID</th>
+                    <th>Team Name</th>
+                  </tr>
+                </thead>
+                <tbody id="round2TableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><div class="visitor-row">
+      <div class="visitor-badge">
+        <i class="ti ti-eye" aria-hidden="true"></i>
+        Visitors: <span id="visitorCount">0</span>
+      </div>
+    </div>
+
+  </div><div class="version-tag">Version 2.9.2 (Glassmorphism)</div>
+
+  <footer>Organized by <span>Gammaco (Thailand) Co., LTD.</span></footer>
+
+</div>
+
+<script>
+  // ==========================================
+  // CONFIG — Global Variables
+  // ==========================================
+  var allData = [];
+  var floorPlanMap = {}; 
+  var zoomVal = 100;
+
+  var API_URL = "https://script.google.com/macros/s/AKfycbyVJOiT4tndTnGOATGPOPHryDXqsz663ju2dbH8YqP_zqWvgkH7Ry5WR4-QG9VODIPf/exec?api=true";
+
+  // ==========================================
+  // ZOOM
+  // ==========================================
+  function setZoom(val) {
+    zoomVal = parseInt(val);
+    document.getElementById('zoomSlider').value = zoomVal;
+    document.getElementById('zoomLabel').textContent = zoomVal + '%';
+    var img = document.querySelector('#floorPlanImgWrap img');
+    if (img) img.style.transform = 'scale(' + (zoomVal / 100) + ')';
+  }
+
+  // ==========================================
+  // FLOOR PLAN DISPLAY
+  // ==========================================
+  // ==========================================
+  // FLOOR PLAN DISPLAY & DRAG TO SCROLL
+  // ==========================================
+  function showFloorPlan(category) {
+    var area     = document.getElementById('floorPlanArea');
+    var wrap     = document.getElementById('floorPlanImgWrap');
+    var zoomCtrl = document.getElementById('zoomControls');
+    area.style.display = 'block';
+
+    if (!category) {
+      wrap.innerHTML = '<div class="coming-soon-box"><i class="ti ti-photo-off" aria-hidden="true"></i><p>เลือก Category เพื่อดู Floor Plan</p></div>';
+      zoomCtrl.style.display = 'none';
+      return;
+    }
+
+    var link = floorPlanMap[category];
+    
+    // เงื่อนไขภาคใต้ (Fallback ของคุณ)
+    if (category.trim() === 'ภาคใต้') {
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=18lmNvmbL8qyIkZz_QD11Q9l9EaKQ_9qs';
+    }
+    
+    if (link && link.trim() !== '' && link !== 'data:;base64,') {
+      wrap.innerHTML = '<img src="' + link + '" alt="Floor Plan: ' + category + '">';
+      zoomCtrl.style.display = 'flex';
+      setZoom(100);
+      
+      // เรียกใช้ระบบลากเปิดฟังก์ชัน Drag หลังจากภาพโหลดเสร็จ
+      initDragToScroll(wrap);
+    } else {
+      wrap.innerHTML =
+        '<div class="coming-soon-box">' +
+          '<i class="ti ti-clock" aria-hidden="true"></i>' +
+          '<p style="color:rgba(255,255,255,0.55);">Floor Plan สำหรับ <strong style="color:#c4b5fd;">' + category + '</strong></p>' +
+          '<span class="coming-soon-badge">⏳ อยู่ระหว่างเตรียมระบบภาพ</span>' +
+        '</div>';
+      zoomCtrl.style.display = 'none';
+    }
+  }
+
+  // ==========================================
+  // FUNCTION: ประมวลผลลากเมาส์ เลื่อน บน-ล่าง-ซ้าย-ขวา
+  // ==========================================
+  function initDragToScroll(el) {
+    var isDown = false;
+    var startX, startY;
+    var scrollLeft, scrollTop;
+
+    // 1. เมื่อกดเมาส์ลงบนภาพ
+    el.addEventListener('mousedown', function(e) {
+      isDown = true;
+      startX = e.pageX - el.offsetLeft;
+      startY = e.pageY - el.offsetTop;
+      scrollLeft = el.scrollLeft;
+      scrollTop = el.scrollTop;
+    });
+
+    // 2. เมื่อเมาส์หลุดออกจากขอบกล่อง
+    el.addEventListener('mouseleave', function() {
+      isDown = false;
+    });
+
+    // 3. เมื่อปล่อยเมาส์
+    el.addEventListener('mouseup', function() {
+      isDown = false;
+    });
+
+    // 4. จังหวะที่ลากเมาส์ ขยับ ซ้าย-ขวา-บน-ล่าง
+    el.addEventListener('mousemove', function(e) {
+      if(!isDown) return;
+      e.preventDefault();
+      var x = e.pageX - el.offsetLeft;
+      var y = e.pageY - el.offsetTop;
+      var walkX = (x - startX) * 1.5; // คูณ 1.5 เพื่อเพิ่มความเร็วในการลากเลื่อน (ปรับลด-เพิ่มได้)
+      var walkY = (y - startY) * 1.5;
+      el.scrollLeft = scrollLeft - walkX;
+      el.scrollTop = scrollTop - walkY;
+    });
+
+    // --- รองรับระบบสัมผัส (Touch Screen) บนสมาร์ตโฟน/แท็บเล็ต ---
+    el.addEventListener('touchstart', function(e) {
+      isDown = true;
+      startX = e.touches[0].pageX - el.offsetLeft;
+      startY = e.touches[0].pageY - el.offsetTop;
+      scrollLeft = el.scrollLeft;
+      scrollTop = el.scrollTop;
+    });
+
+    el.addEventListener('touchend', function() {
+      isDown = false;
+    });
+
+    el.addEventListener('touchmove', function(e) {
+      if(!isDown) return;
+      var x = e.touches[0].pageX - el.offsetLeft;
+      var y = e.touches[0].pageY - el.offsetTop;
+      var walkX = (x - startX) * 1.5;
+      var walkY = (y - startY) * 1.5;
+      el.scrollLeft = scrollLeft - walkX;
+      el.scrollTop = scrollTop - walkY;
+    });
+  }
+
+  // ==========================================
+  // GET URL PARAMETER
+  // ==========================================
+  function getUrlParam(name) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // ==========================================
+  // COPY LINK TO CLIPBOARD
+  // ==========================================
+  function copyShareLink() {
+    var teamId = document.getElementById('teamId').value;
+    if (!teamId) return;
+
+    // หา URL หลักของเว็บแอปพลิเคชัน (ลบ Parameter เดิมออกถ้ามี)
+    var baseUrl = window.location.href.split('?')[0];
+    var shareUrl = baseUrl + '?teamId=' + encodeURIComponent(teamId);
+
+    navigator.clipboard.writeText(shareUrl).then(function() {
+      Swal.fire({
+        title: 'คัดลอกลิงก์สำเร็จ!',
+        text: 'คุณสามารถส่งลิงก์นี้ให้ทีมเปิดดูข้อมูลได้ทันที',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false,
+        background: 'rgba(13,31,107,0.95)',
+        color: '#fff'
+      });
+    }).catch(function() {
+      // Fallback เผื่อเบราว์เซอร์ไม่รองรับ clipboard API
+      var tempInput = document.createElement('input');
+      tempInput.value = shareUrl;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      Swal.fire({
+        title: 'คัดลอกลิงก์สำเร็จ!',
+        text: 'คุณสามารถส่งลิงก์นี้ให้ทีมเปิดดูข้อมูลได้ทันที',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false,
+        background: 'rgba(13,31,107,0.95)',
+        color: '#fff'
+      });
+    });
+  }
+
+  // ==========================================
+  // INIT
+  // ==========================================
   window.onload = function() {
     Swal.fire({
       title: 'กำลังเชื่อมต่อข้อมูล...',
       text: 'กรุณารอสักครู่',
       allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading() }
+      background: 'rgba(13,31,107,0.95)',
+      color: '#fff',
+      didOpen: function() { Swal.showLoading(); }
     });
 
     fetchDataFromServer(true);
-    startAutoRefresh(); 
+    startAutoRefresh();
   };
 
-  function fetchDataFromServer(isFirstLoad = false) {
+  // ==========================================
+  // DATA FETCH FROM SERVER
+  // ==========================================
+  function fetchDataFromServer(isFirstLoad) {
     fetch(API_URL)
-      .then(response => response.json())
-      .then(res => {
-        allData = res.teams || res; 
-        if(res.visitors) {
-          document.getElementById('visitorCount').innerText = res.visitors;
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        allData = res.teams || [];
+        if (res.visitors) document.getElementById('visitorCount').innerText = res.visitors;
+
+        if (res.floorPlan && Array.isArray(res.floorPlan)) {
+          floorPlanMap = {};
+          res.floorPlan.forEach(function(item) {
+            if (item.category) {
+              floorPlanMap[item.category.trim()] = item.link ? item.link.trim() : null;
+            }
+          });
         }
 
-        document.getElementById('sysStatusDot').className = "status-dot dot-green";
-        document.getElementById('sysStatusText').innerText = "Connected & Ready";
+        document.getElementById('sysStatusDot').className = 'dot dot-green';
+        document.getElementById('sysStatusText').innerText = 'Connected';
 
         if (isFirstLoad) {
           populateCategories();
-          Swal.close();
+          
+          // ตรวจสอบพารามิเตอร์ทีมจาก URL (?teamId=...)
+          var paramTeamId = getUrlParam('teamId');
+          if (paramTeamId) {
+            handleAutoSelectFromParam(paramTeamId.trim());
+          } else {
+            Swal.close();
+          }
         } else if (document.getElementById('teamId').value) {
-          autoSearch(false); 
+          autoSearch(false);
         }
       })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('sysStatusDot').className = "status-dot dot-red";
-        document.getElementById('sysStatusText').innerText = "Disconnected";
+      .catch(function(err) {
+        console.error('Fetch error:', err);
+        document.getElementById('sysStatusDot').className = 'dot dot-red';
+        document.getElementById('sysStatusText').innerText = 'Disconnected';
         if (isFirstLoad) {
-          Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อข้อมูลได้', 'error');
+          Swal.fire({
+            title: 'ผิดพลาด',
+            text: 'ไม่สามารถเชื่อมต่อข้อมูลได้',
+            icon: 'error',
+            background: 'rgba(13,31,107,0.95)',
+            color: '#fff'
+          });
         }
       });
   }
 
+  // ==========================================
+  // HANDLE AUTO SELECT VIA URL PARAMETER
+  // ==========================================
+  function handleAutoSelectFromParam(targetTeamId) {
+    // ค้นหาทีมในฐานข้อมูลทั้งหมดเพื่อเอา Category และ Age Group
+    var foundTeam = allData.find(function(t) {
+      return String(t.teamId).toLowerCase() === targetTeamId.toLowerCase();
+    });
+
+    if (foundTeam) {
+      // 1. เลือก Category
+      var catSelect = document.getElementById('category');
+      catSelect.value = foundTeam.category;
+      
+      // 2. อัปเดตและเลือก Age Group
+      updateAgeGroups();
+      var ageSelect = document.getElementById('ageGroup');
+      ageSelect.value = foundTeam.ageGroup;
+      
+      // 3. อัปเดตและเลือก Team ID
+      updateTeamIDs();
+      var teamSelect = document.getElementById('teamId');
+      teamSelect.value = foundTeam.teamId;
+      
+      // 4. สั่งค้นหาและแสดงผล
+      autoSearch(false);
+      Swal.close();
+    } else {
+      // ถ้าไม่เจอทีมจากลิงก์ที่ส่งมา ให้ปิด Loading ปกติ
+      Swal.close();
+      Swal.fire({
+        title: 'ไม่พบข้อมูลทีม',
+        text: 'รหัสทีมจากลิงก์ระบุไม่ถูกต้อง หรือไม่มีในระบบ',
+        icon: 'warning',
+        background: 'rgba(13,31,107,0.95)',
+        color: '#fff'
+      });
+    }
+  }
+
+  // ==========================================
+  // DROPDOWNS
+  // ==========================================
   function populateCategories() {
-    const catSelect = document.getElementById('category');
-    const categories = [...new Set(allData.map(item => item.category))].filter(Boolean);
-    catSelect.innerHTML = '<option value="">เลือกประเภท...</option>'; 
-    categories.forEach(cat => catSelect.options.add(new Option(cat, cat)));
+    var catSelect = document.getElementById('category');
+    var cats = [];
+    allData.forEach(function(item) { 
+      if (item.category && cats.indexOf(item.category) === -1) cats.push(item.category); 
+    });
+    catSelect.innerHTML = '<option value="">เลือกประเภท...</option>';
+    cats.forEach(function(c) { catSelect.options.add(new Option(c, c)); });
   }
 
   function updateAgeGroups() {
-    const catVal = document.getElementById('category').value;
-    const ageSelect = document.getElementById('ageGroup');
-    const teamSelect = document.getElementById('teamId');
-    ageSelect.innerHTML = '<option value="">เลือกอายุ...</option>';
+    var catVal     = document.getElementById('category').value;
+    var ageSelect = document.getElementById('ageGroup');
+    var teamSelect = document.getElementById('teamId');
+
+    ageSelect.innerHTML  = '<option value="">เลือกอายุ...</option>';
     teamSelect.innerHTML = '<option value="">เลือกรหัสทีม...</option>';
-    teamSelect.disabled = true;
-    clearDisplay(); 
+    teamSelect.disabled  = true;
+    clearDisplay();
+    showFloorPlan(catVal);
 
     if (catVal) {
-      const filteredAges = [...new Set(allData.filter(i => i.category === catVal).map(i => i.ageGroup))].filter(Boolean).sort();
-      filteredAges.forEach(age => ageSelect.options.add(new Option(age, age)));
+      var ages = [];
+      allData.filter(function(i) { return i.category === catVal; })
+             .forEach(function(i) { if (i.ageGroup && ages.indexOf(i.ageGroup) === -1) ages.push(i.ageGroup); });
+      ages.sort().forEach(function(a) { ageSelect.options.add(new Option(a, a)); });
       ageSelect.disabled = false;
     }
   }
 
   function updateTeamIDs() {
-    const catVal = document.getElementById('category').value;
-    const ageVal = document.getElementById('ageGroup').value;
-    const teamSelect = document.getElementById('teamId');
+    var catVal     = document.getElementById('category').value;
+    var ageVal     = document.getElementById('ageGroup').value;
+    var teamSelect = document.getElementById('teamId');
     teamSelect.innerHTML = '<option value="">เลือกรหัสทีม...</option>';
     clearDisplay();
 
     if (ageVal) {
-      const filteredTeams = allData.filter(i => i.category === catVal && i.ageGroup === ageVal);
-      filteredTeams.forEach(team => teamSelect.options.add(new Option(team.teamId, team.teamId)));
+      allData.filter(function(i) { return i.category === catVal && i.ageGroup === ageVal; })
+             .forEach(function(t) { teamSelect.options.add(new Option(t.teamId, t.teamId)); });
       teamSelect.disabled = false;
     }
   }
 
-  function autoSearch(isManual = true) {
-    const teamId = document.getElementById('teamId').value;
-    const category = document.getElementById('category').value;
-    const ageGroup = document.getElementById('ageGroup').value;
+  // ==========================================
+  // SEARCH & DISPLAY
+  // ==========================================
+  function autoSearch(isManual) {
+    if (isManual === undefined) isManual = true;
+    var teamId   = document.getElementById('teamId').value;
+    var category = document.getElementById('category').value;
+    var ageGroup = document.getElementById('ageGroup').value;
 
-    if (!teamId) {
-      clearDisplay();
-      return;
-    }
+    if (!teamId) { clearDisplay(); return; }
 
     if (isManual) {
-      Swal.fire({ title: 'กำลังค้นหา...', timer: 500, showConfirmButton: false, didOpen: () => { Swal.showLoading() } });
+      Swal.fire({ 
+        title: 'กำลังค้นหา...', 
+        timer: 500, 
+        showConfirmButton: false,
+        background: 'rgba(13,31,107,0.95)', 
+        color: '#fff', 
+        didOpen: function() { Swal.showLoading(); } 
+      });
     }
 
-    const result = allData.find(i => i.teamId === teamId);
-
-    if (result) {
-      document.getElementById('seatDisplay').innerText = result.no || '-'; 
-      document.getElementById('teamNameDisplay').innerText = result.teamName;
-      document.getElementById('institutionDisplay').innerText = result.institution || '-';
-      document.getElementById('coachDisplay').innerText = result.coach || '-';
-      document.getElementById('m1Display').innerText = result.member1 || '-';
-      document.getElementById('m2Display').innerText = result.member2 || '-';
-      document.getElementById('m3Display').innerText = result.member3 || '-';
-
-      const r1Body = document.getElementById('round1TableBody');
-      const r2Body = document.getElementById('round2TableBody');
-      
-      if (r1Body && r2Body) {
-        r1Body.innerHTML = '';
-        r2Body.innerHTML = '';
-
-        const currentSeatStr = String(result.no || '').trim().toUpperCase();
-        const groupMatch = currentSeatStr.match(/^[A-Z]+/);
-        const targetGroup = groupMatch ? groupMatch[0] : '';
-
-        document.getElementById('fieldLabel').innerText = category + " - " + ageGroup + (targetGroup ? " (Field: " + targetGroup + ")" : "");
-
-        const filteredGroupTeams = allData.filter(item => {
-          let seatPrefix = '';
-          const match = String(item.no || '').trim().toUpperCase().match(/^[A-Z]+/); 
-          if (match) seatPrefix = match[0];
-          
-          return item.category === category && 
-                 item.ageGroup === ageGroup && 
-                 seatPrefix === targetGroup &&
-                 targetGroup !== '';
-        });
-
-        // 1. จัดการตาราง Round 1
-        const round1Teams = filteredGroupTeams.filter(t => t.hasRound1).sort((a, b) => a.sortOrder - b.sortOrder);
-        
-        round1Teams.forEach(team => {
-          const isCurrentTeam = team.teamId === teamId ? 'class="current-team-highlight"' : '';
-          let activeRowStyle = isCurrentTeam;
-
-          r1Body.innerHTML += `
-            <tr ${isCurrentTeam}>
-              <td class="text-center font-weight-bold" ${activeRowStyle}>${team.no || '-'}</td>
-              <td ${activeRowStyle}>${team.teamId}</td>
-              <td ${activeRowStyle}>${team.teamName}</td>
-            </tr>
-          `;
-        });
-
-        // 2. จัดการตาราง Round 2
-        const round2Teams = filteredGroupTeams.filter(t => t.hasRound2).sort((a, b) => a.sortOrderR2 - b.sortOrderR2);
-        
-        round2Teams.forEach(team => {
-          const isCurrentTeam = team.teamId === teamId ? 'class="current-team-highlight"' : '';
-          const isCompleted = team.newRound2Score !== undefined && team.newRound2Score !== null && team.newRound2Score !== "" ? 'class="completed-match-text"' : '';
-          let activeRowStyle = isCurrentTeam ? isCurrentTeam : isCompleted;
-
-          r2Body.innerHTML += `
-            <tr ${isCurrentTeam}>
-              <td class="text-center font-weight-bold" ${activeRowStyle}>${team.no || '-'}</td>
-              <td ${activeRowStyle}>${team.teamId}</td>
-              <td ${activeRowStyle}>${team.teamName}</td>
-            </tr>
-          `;
-        });
-
-        document.getElementById('matchScheduleArea').style.display = 'block';
-      }
-
-      document.getElementById('resultArea').style.display = 'block';
+    var result = null;
+    for (var i = 0; i < allData.length; i++) {
+      if (allData[i].teamId === teamId) { result = allData[i]; break; }
     }
+    if (!result) return;
+
+    document.getElementById('seatDisplay').innerText       = result.no          || '-';
+    document.getElementById('teamNameDisplay').innerText   = result.teamName    || '-';
+    document.getElementById('institutionDisplay').innerText = result.institution || '-';
+    document.getElementById('coachDisplay').innerText      = result.coach       || '-';
+    document.getElementById('m1Display').innerText         = result.member1     || '-';
+    document.getElementById('m2Display').innerText         = result.member2     || '-';
+    document.getElementById('m3Display').innerText         = result.member3     || '-';
+
+    var r1Body = document.getElementById('round1TableBody');
+    var r2Body = document.getElementById('round2TableBody');
+    r1Body.innerHTML = '';
+    r2Body.innerHTML = '';
+
+    var currentSeat = String(result.no || '').trim().toUpperCase();
+    var groupMatch  = currentSeat.match(/^[A-Z]+/);
+    var targetGroup = groupMatch ? groupMatch[0] : '';
+
+    document.getElementById('fieldLabel').innerText =
+      category + ' - ' + ageGroup + (targetGroup ? ' (Field: ' + targetGroup + ')' : '');
+
+    var groupTeams = allData.filter(function(item) {
+      var m = String(item.no || '').trim().toUpperCase().match(/^[A-Z]+/);
+      return item.category === category && item.ageGroup === ageGroup
+          && m && m[0] === targetGroup && targetGroup !== '';
+    });
+
+    // Round 1
+    groupTeams.filter(function(t) { return t.hasRound1; })
+              .sort(function(a, b) { return a.sortOrder - b.sortOrder; })
+              .forEach(function(t) {
+                var hl = t.teamId === teamId ? 'class="highlight"' : '';
+                r1Body.innerHTML += '<tr ' + hl + '><td>' + (t.no || '-') + '</td><td>' + t.teamId + '</td><td>' + t.teamName + '</td></tr>';
+              });
+
+    // Round 2
+    groupTeams.filter(function(t) { return t.hasRound2; })
+              .sort(function(a, b) { return a.sortOrderR2 - b.sortOrderR2; })
+              .forEach(function(t) {
+                var hl = t.teamId === teamId ? 'class="highlight"' : '';
+                r2Body.innerHTML += '<tr ' + hl + '><td>' + (t.no || '-') + '</td><td>' + t.teamId + '</td><td>' + t.teamName + '</td></tr>';
+              });
+
+    document.getElementById('matchScheduleArea').style.display = 'block';
+    document.getElementById('resultArea').style.display        = 'block';
   }
 
   function clearDisplay() {
-    document.getElementById('resultArea').style.display = 'none';
-    document.getElementById('matchScheduleArea').style.display = 'none'; 
-    document.getElementById('seatDisplay').innerText = '--';
+    document.getElementById('resultArea').style.display      = 'none';
+    document.getElementById('matchScheduleArea').style.display = 'none';
+    document.getElementById('seatDisplay').innerText          = '--';
   }
 
   function startAutoRefresh() {
-    setInterval(() => {
-      fetchDataFromServer(false);
-    }, 60000); 
+    setInterval(function() { fetchDataFromServer(false); }, 60000);
   }
 </script>
+
 </body>
 </html>
