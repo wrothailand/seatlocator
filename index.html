@@ -629,6 +629,11 @@
     if (category.trim() === 'ภาคใต้') {
       link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=18lmNvmbL8qyIkZz_QD11Q9l9EaKQ_9qs';
     }
+
+    // เงื่อนไขกรุงเทพมหานคร (เพิ่มเข้าไปใหม่ ไม่ได้ลบอันเก่า)
+    if (category.trim() === 'กรุงเทพมหานคร') {
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1UlAu3v9RAiL1ahlRHyXSFZeQOlQuZ-0f';
+    }
     
     if (link && link.trim() !== '' && link !== 'data:;base64,') {
       wrap.innerHTML = '<img src="' + link + '" alt="Floor Plan: ' + category + '">';
@@ -646,7 +651,7 @@
         '</div>';
       zoomCtrl.style.display = 'none';
     }
-  }
+}
 
   // ==========================================
   // FUNCTION: ประมวลผลลากเมาส์ เลื่อน บน-ล่าง-ซ้าย-ขวา
