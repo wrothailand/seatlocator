@@ -634,6 +634,11 @@
     if (category.trim() === 'กรุงเทพมหานคร') {
       link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1jUEHByTwGqRdKmbl3xUvL7V85qM4yIf-';
     }
+
+    // เงื่อนไขภาคกลาง
+    if (category.trim() === 'ภาคกลาง') {
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1T3HZuPFVvIW5WR397IbNs2DajrQG7BkE';
+    }
     
     if (link && link.trim() !== '' && link !== 'data:;base64,') {
       wrap.innerHTML = '<img src="' + link + '" alt="Floor Plan: ' + category + '">';
