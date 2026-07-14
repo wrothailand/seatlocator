@@ -629,17 +629,7 @@
     
     // เงื่อนไขภาคใต้ (Fallback ของคุณ)
     if (category.trim() === 'ภาคใต้') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1YVwzyTs5j4veoN0aVAIt6iqLdD9guq5H';
-    }
-
-    // เงื่อนไขกรุงเทพมหานคร (เพิ่มเข้าไปใหม่ ไม่ได้ลบอันเก่า)
-    if (category.trim() === 'กรุงเทพมหานคร') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1jUEHByTwGqRdKmbl3xUvL7V85qM4yIf-';
-    }
-
-    // เงื่อนไขภาคกลาง
-    if (category.trim() === 'ภาคกลาง') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1T3HZuPFVvIW5WR397IbNs2DajrQG7BkE';
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=18lmNvmbL8qyIkZz_QD11Q9l9EaKQ_9qs';
     }
     
     if (link && link.trim() !== '' && link !== 'data:;base64,') {
@@ -658,7 +648,7 @@
         '</div>';
       zoomCtrl.style.display = 'none';
     }
-}
+  }
 
   // ==========================================
   // FUNCTION: ประมวลผลลากเมาส์ เลื่อน บน-ล่าง-ซ้าย-ขวา
@@ -781,7 +771,7 @@
       text: 'กรุณารอสักครู่',
       allowOutsideClick: false,
       background: '#ffffff',
-        color: '#333333'
+        color: '#333333',
       didOpen: function() { Swal.showLoading(); }
     });
 
@@ -835,7 +825,7 @@
             text: 'ไม่สามารถเชื่อมต่อข้อมูลได้',
             icon: 'error',
             background: '#ffffff',
-        color: '#333333'
+            color: '#333333'
           });
         }
       });
