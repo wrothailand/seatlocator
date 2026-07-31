@@ -627,9 +627,14 @@
 
     var link = floorPlanMap[category];
     
-    // เงื่อนไขภาคใต้ (Fallback ของคุณ)
+    // เงื่อนไขภาคใต้ (Fallback)
     if (category.trim() === 'ภาคใต้') {
       link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=18lmNvmbL8qyIkZz_QD11Q9l9EaKQ_9qs';
+    }
+    
+    // เงื่อนไขภาคตะวันออกเฉียงเหนือ (Fallback)
+    if (category.trim() === 'ภาคตะวันออกเฉียงเหนือ') {
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1-B4bdWqN-BlAw7qxpIpqBrQ2zEEdmDOM';
     }
     
     if (link && link.trim() !== '' && link !== 'data:;base64,') {
@@ -648,7 +653,7 @@
         '</div>';
       zoomCtrl.style.display = 'none';
     }
-  }
+}
 
   // ==========================================
   // FUNCTION: ประมวลผลลากเมาส์ เลื่อน บน-ล่าง-ซ้าย-ขวา
