@@ -643,6 +643,10 @@
     if (category.trim() === 'ภาคตะวันออกเฉียงเหนือ') {
       link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1wwb06NPH2mKVeASjFa8MsOWu7qTJSNsD';
     }
+
+    if (category.trim() === 'ภาคเหนือ') {
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=';
+    }
     
     if (link && link.trim() !== '' && link !== 'data:;base64,') {
       wrap.innerHTML = '<img src="' + link + '" alt="Floor Plan: ' + category + '">';
