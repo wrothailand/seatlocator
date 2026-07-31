@@ -631,10 +631,17 @@
     if (category.trim() === 'ภาคใต้') {
       link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=18lmNvmbL8qyIkZz_QD11Q9l9EaKQ_9qs';
     }
+
+    if (category.trim() === 'กรุงเทพมหานคร') {
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1jUEHByTwGqRdKmbl3xUvL7V85qM4yIf-';
+    }
+
+    if (category.trim() === 'ภาคกลาง') {
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1T3HZuPFVvIW5WR397IbNs2DajrQG7BkE';
+    }
     
-    // เงื่อนไขภาคตะวันออกเฉียงเหนือ (Fallback)
     if (category.trim() === 'ภาคตะวันออกเฉียงเหนือ') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1-B4bdWqN-BlAw7qxpIpqBrQ2zEEdmDOM';
+      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1wwb06NPH2mKVeASjFa8MsOWu7qTJSNsD';
     }
     
     if (link && link.trim() !== '' && link !== 'data:;base64,') {
