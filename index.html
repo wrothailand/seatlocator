@@ -111,26 +111,124 @@
     }
     .field-group label i { font-size: 1rem; color: #a78bfa; }
 
-    select {
+    select, input[type="text"].search-input {
       width: 100%;
-      padding: 10px 36px 10px 14px;
+      padding: 10px 14px;
       background: #ffffff;
       border: 1px solid #cbd5e1;
       border-radius: 12px;
       color: #333;
       font-family: 'Kanit', sans-serif;
       font-size: 1rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    select {
+      padding-right: 36px;
       appearance: none;
       -webkit-appearance: none;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 12px center;
     }
-    select:focus   { outline: none; border-color: #a78bfa; background-color: #f8fafc; }
+    select:focus, input[type="text"].search-input:focus { outline: none; border-color: #a78bfa; background-color: #f8fafc; }
     select:disabled { opacity: 0.45; cursor: not-allowed; background-color: #f1f5f9; }
     select option  { background: #fff; color: #333; }
+
+    .btn-search {
+      padding: 10px 20px;
+      background: #8b5cf6;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Kanit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-search:hover { background: #7c3aed; }
+
+    .btn-back-results {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      border: none;
+      color: #ffffff;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-family: 'Kanit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+    }
+    .btn-back-results:hover {
+      background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(139, 92, 246, 0.45);
+    }
+
+    .search-divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.82rem;
+      margin: 18px 0;
+    }
+    .search-divider::before, .search-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    .search-divider span { padding: 0 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ===== CATEGORY TABS ===== */
+    .category-tabs-container {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .cat-tab-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.8);
+      color: #475569;
+      font-size: 0.88rem;
+      cursor: pointer;
+      font-family: 'Kanit', sans-serif;
+      transition: all 0.2s ease;
+    }
+    .cat-tab-btn:hover {
+      background: #ffffff;
+      border-color: #a78bfa;
+      color: #7c3aed;
+    }
+    .cat-tab-btn.active {
+      background: #8b5cf6;
+      color: #ffffff;
+      border-color: #8b5cf6;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+    }
+
+    .search-table-row {
+      cursor: pointer;
+      transition: filter 0.2s ease, transform 0.1s ease;
+    }
+    .search-table-row:hover {
+      filter: brightness(0.96);
+    }
 
     /* ===== FLOOR PLAN ===== */
     .floor-plan-card { padding: 20px; margin-bottom: 20px; }
@@ -184,33 +282,6 @@
       background: #a78bfa;
       cursor: pointer;
       border: 2px solid rgba(255,255,255,0.9);
-    }
-    input[type=range].zoom-slider::-moz-range-thumb {
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: #a78bfa;
-      cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.9);
-    }
-
-    .floor-plan-img-wrap {
-      border-radius: 14px;
-      overflow: hidden;
-      background: #e2e8f0;
-      min-height: 180px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      transition: all 0.2s;
-      border: 1px solid #cbd5e1;
-    }
-
-    .floor-plan-img-wrap img {
-      width: 100%;
-      height: auto;
-      display: block;
-      transition: transform 0.2s ease;
-      transform-origin: center top;
     }
 
     .coming-soon-box { text-align: center; padding: 48px 20px; width: 100%; }
@@ -273,12 +344,9 @@
     .seat-number {
       font-size: 5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #ec4899, #f43f5e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
       line-height: 1.1;
       margin: 4px 0;
+      transition: color 0.3s ease;
     }
 
     .team-name-big { font-size: 1.45rem; font-weight: 600; color: #1e293b; margin: 12px 0 18px; }
@@ -336,8 +404,6 @@
     }
     .round-header.r1 { background: rgba(56,189,248,0.22); border-bottom: 1px solid rgba(56,189,248,0.28); color: #0369a1; }
     .round-header.r2 { background: rgba(52,211,153,0.2); border-bottom: 1px solid rgba(52,211,153,0.28); color: #047857; }
-    .round-header.r1 i { color: #0284c7; }
-    .round-header.r2 i { color: #059669; }
 
     .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
     .schedule-table th {
@@ -350,7 +416,7 @@
       font-weight: 500;
       border-bottom: 1px solid #e2e8f0;
     }
-    .schedule-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #475569; }
+    .schedule-table td { padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05); color: #334155; }
     .schedule-table tr:last-child td { border-bottom: none; }
     .schedule-table tr.highlight td {
       background: #fef9c3 !important;
@@ -389,7 +455,6 @@
       bottom: 0; left: 0; width: 100%;
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid #e2e8f0;
       text-align: center;
       padding: 12px;
@@ -410,7 +475,6 @@
       border: 1px solid #e2e8f0;
       z-index: 200;
       backdrop-filter: blur(8px);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
     #floorPlanImgWrap {
@@ -420,14 +484,9 @@
       position: relative;
       cursor: grab;     
       user-select: none;
-      -webkit-user-select: none;
       background: #e2e8f0; 
     }
-
-    #floorPlanImgWrap:active {
-      cursor: grabbing; 
-    }
-
+    #floorPlanImgWrap:active { cursor: grabbing; }
     #floorPlanImgWrap img {
       max-width: 100%;
       height: auto;
@@ -455,7 +514,24 @@
 
   <div class="container">
 
+    <!-- SEARCH CARD -->
     <div class="glass search-card">
+      <div style="margin-bottom: 12px;">
+        <div class="field-group">
+          <label><i class="ti ti-search" aria-hidden="true"></i> ค้นหาด่วน (Team ID / ชื่อทีม / สถาบัน)</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="searchInput" class="search-input" placeholder="พิมพ์ Team ID, ชื่อทีม หรือ ชื่อสถาบัน..." onkeyup="if(event.key==='Enter') executeKeywordSearch()">
+            <button class="btn-search" onclick="executeKeywordSearch()">
+              <i class="ti ti-search"></i> ค้นหา
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-divider">
+        <span>หรือ เลือกตามตัวกรอง</span>
+      </div>
+
       <div class="search-row">
         <div class="field-group">
           <label><i class="ti ti-layout-grid" aria-hidden="true"></i> Category</label>
@@ -478,12 +554,44 @@
       </div>
     </div>
 
+    <!-- ผลการค้นหาตารางรวม -->
+    <div id="searchResultsArea" style="display:none; margin-bottom: 20px;">
+      <div class="glass" style="padding: 20px;">
+        <div class="section-heading" id="searchResultsTitle" style="margin-bottom: 14px;">ผลการค้นหา</div>
+
+        <!-- TAB สำหรับแยก CATEGORY -->
+        <div id="categoryTabsContainer" class="category-tabs-container"></div>
+
+        <div style="overflow-x: auto;">
+          <table class="schedule-table">
+            <thead>
+              <tr style="background: rgba(139, 92, 246, 0.15);">
+                <th style="width:18%">หมายเลขที่นั่ง</th>
+                <th style="width:22%">Team ID</th>
+                <th style="width:30%">Team Name</th>
+                <th style="width:30%">Institution</th>
+              </tr>
+            </thead>
+            <tbody id="searchResultsTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- หมายเหตุอธิบายความหมายของสี -->
+        <div style="font-size: 0.8rem; color: #475569; margin-top: 14px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; background: rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);">
+          <span style="font-weight: 500;">หมายเหตุ (สีข้อความตัวเลข / สีแถว):</span>
+          <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#16a34a; border-radius:3px; display:inline-block;"></span> Elementary (สีเขียว)</span>
+          <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#dc2626; border-radius:3px; display:inline-block;"></span> Junior (สีแดง)</span>
+          <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#2563eb; border-radius:3px; display:inline-block;"></span> Senior (สีน้ำเงิน)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLOOR PLAN -->
     <div id="floorPlanArea" style="display:none;">
       <div class="glass floor-plan-card">
         <div class="floor-plan-header">
           <div class="floor-plan-title">
-            <i class="ti ti-map" aria-hidden="true"></i>
-            Floor Plan
+            <i class="ti ti-map" aria-hidden="true"></i> Floor Plan
           </div>
           <div class="zoom-controls" id="zoomControls" style="display:none;">
             <i class="ti ti-zoom-out" aria-hidden="true" onclick="setZoom(Math.max(50, zoomVal - 10))"></i>
@@ -501,7 +609,12 @@
       </div>
     </div>
 
+    <!-- RESULT AREA -->
     <div id="resultArea" style="display:none;">
+
+      <button id="btnBackToResults" class="btn-back-results" onclick="backToSearchResults()" style="display:none;">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i> ย้อนกลับ
+      </button>
 
       <div class="glass result-card">
         <button class="btn-copy-link" onclick="copyShareLink()" title="คัดลอกลิงก์ของทีมนี้">
@@ -573,14 +686,18 @@
         </div>
       </div>
 
-    </div><div class="visitor-row">
+    </div>
+
+    <div class="visitor-row">
       <div class="visitor-badge">
         <i class="ti ti-eye" aria-hidden="true"></i>
         Visitors: <span id="visitorCount">0</span>
       </div>
     </div>
 
-  </div><div class="version-tag">Version 2.9.2 (Glassmorphism)</div>
+  </div>
+
+  <div class="version-tag">Version 3.3.0</div>
 
   <footer>Organized by <span>Gammaco (Thailand) Co., LTD.</span></footer>
 
@@ -593,8 +710,200 @@
   var allData = [];
   var floorPlanMap = {}; 
   var zoomVal = 100;
+  var cameFromSearchResults = false;
 
   var API_URL = "https://script.google.com/macros/s/AKfycbyVJOiT4tndTnGOATGPOPHryDXqsz663ju2dbH8YqP_zqWvgkH7Ry5WR4-QG9VODIPf/exec?api=true";
+
+  // ==========================================
+  // HELPER FUNCTIONS: AGE GROUP COLOR & RANK
+  // ==========================================
+  function getAgeColor(ageGroup) {
+    var age = String(ageGroup || '').toLowerCase();
+    if (age.includes('elementary')) return '#16a34a'; // สีเขียว
+    if (age.includes('junior'))     return '#dc2626'; // สีแดง
+    if (age.includes('senior'))     return '#2563eb'; // สีน้ำเงิน
+    return '#1e293b'; // สีปกติตัวเลือกอื่น
+  }
+
+  function getAgeRank(ageGroup) {
+    var age = String(ageGroup || '').toLowerCase();
+    if (age.includes('elementary')) return 1;
+    if (age.includes('junior'))     return 2;
+    if (age.includes('senior'))     return 3;
+    return 4;
+  }
+
+  // ==========================================
+  // KEYWORD SEARCH FUNCTION
+  // ==========================================
+  function executeKeywordSearch() {
+    var query = document.getElementById('searchInput').value.trim().toLowerCase();
+    var searchResultsArea = document.getElementById('searchResultsArea');
+    var tbody = document.getElementById('searchResultsTableBody');
+
+    if (!query) {
+      Swal.fire({
+        title: 'กรุณากรอกข้อความ',
+        text: 'ระบุ Team ID, ชื่อทีม หรือชื่อสถาบันเพื่อค้นหา',
+        icon: 'warning',
+        background: '#ffffff',
+        color: '#333333'
+      });
+      return;
+    }
+
+    var matches = allData.filter(function(item) {
+      var tId = String(item.teamId || '').toLowerCase();
+      var tName = String(item.teamName || '').toLowerCase();
+      var inst = String(item.institution || '').toLowerCase();
+      return tId.includes(query) || tName.includes(query) || inst.includes(query);
+    });
+
+    if (matches.length === 0) {
+      searchResultsArea.style.display = 'none';
+      clearDisplay();
+      Swal.fire({
+        title: 'ไม่พบข้อมูล',
+        text: 'ไม่พบทีม ชื่อทีม หรือสถาบันที่ตรงกับคำค้นหา',
+        icon: 'info',
+        background: '#ffffff',
+        color: '#333333'
+      });
+      return;
+    }
+
+    // Sort ผลการค้นหาตาม Category -> Age Group (Elementary->Junior->Senior) -> Team ID
+    matches.sort(function(a, b) {
+      var catA = String(a.category || '');
+      var catB = String(b.category || '');
+      if (catA !== catB) return catA.localeCompare(catB, 'th');
+
+      var rankA = getAgeRank(a.ageGroup);
+      var rankB = getAgeRank(b.ageGroup);
+      if (rankA !== rankB) return rankA - rankB;
+
+      return String(a.teamId).localeCompare(String(b.teamId), undefined, { numeric: true, sensitivity: 'base' });
+    });
+
+    clearDisplay();
+
+    if (matches.length === 1) {
+      searchResultsArea.style.display = 'none';
+      cameFromSearchResults = false;
+      selectTeamDirectly(matches[0].teamId);
+    } else {
+      cameFromSearchResults = true;
+      tbody.innerHTML = '';
+      document.getElementById('searchResultsTitle').innerText = 'ผลการค้นหาสำหรับ "' + document.getElementById('searchInput').value.trim() + '" (พบ ' + matches.length + ' รายการ)';
+
+      // สร้าง Tab แยก Category
+      renderCategoryTabs(matches);
+
+      matches.forEach(function(t) {
+        var tr = document.createElement('tr');
+        tr.className = 'search-table-row';
+        tr.setAttribute('data-category', t.category || '');
+
+        var age = String(t.ageGroup || '').toLowerCase();
+        if (age.includes('elementary')) {
+          tr.style.backgroundColor = '#dcfce7';
+        } else if (age.includes('junior')) {
+          tr.style.backgroundColor = '#fee2e2';
+        } else if (age.includes('senior')) {
+          tr.style.backgroundColor = '#dbeafe';
+        }
+
+        tr.onclick = function() {
+          selectTeamDirectly(t.teamId);
+          searchResultsArea.style.display = 'none';
+        };
+
+        // ลำดับที่นั่ง ตัวหนังสือเปลี่ยนสีไปตามรุ่น
+        var seatColor = getAgeColor(t.ageGroup);
+
+        tr.innerHTML = '<td><strong style="color: ' + seatColor + '; font-size: 1.05rem;">' + (t.no || '-') + '</strong></td>' +
+                       '<td>' + (t.teamId || '-') + '</td>' +
+                       '<td>' + (t.teamName || '-') + '</td>' +
+                       '<td>' + (t.institution || '-') + '</td>';
+        tbody.appendChild(tr);
+      });
+
+      searchResultsArea.style.display = 'block';
+    }
+  }
+
+  // ==========================================
+  // RENDER & FILTER CATEGORY TABS
+  // ==========================================
+  function renderCategoryTabs(matches) {
+    var container = document.getElementById('categoryTabsContainer');
+    container.innerHTML = '';
+
+    var categories = ['ทั้งหมด'];
+    matches.forEach(function(m) {
+      if (m.category && categories.indexOf(m.category) === -1) {
+        categories.push(m.category);
+      }
+    });
+
+    categories.forEach(function(cat, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'cat-tab-btn' + (idx === 0 ? ' active' : '');
+      btn.innerText = cat;
+      btn.onclick = function() {
+        document.querySelectorAll('.cat-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        filterSearchResultsByCategory(cat);
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  function filterSearchResultsByCategory(category) {
+    var rows = document.querySelectorAll('.search-table-row');
+    rows.forEach(function(row) {
+      var rowCat = row.getAttribute('data-category');
+      if (category === 'ทั้งหมด' || rowCat === category) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  function backToSearchResults() {
+    document.getElementById('resultArea').style.display = 'none';
+    document.getElementById('searchResultsArea').style.display = 'block';
+    document.getElementById('searchResultsArea').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function selectTeamDirectly(targetTeamId) {
+    var foundTeam = allData.find(function(t) {
+      return String(t.teamId).toLowerCase() === String(targetTeamId).toLowerCase();
+    });
+
+    if (foundTeam) {
+      var catSelect = document.getElementById('category');
+      catSelect.value = foundTeam.category;
+      updateAgeGroups();
+
+      var ageSelect = document.getElementById('ageGroup');
+      ageSelect.value = foundTeam.ageGroup;
+      updateTeamIDs();
+
+      var teamSelect = document.getElementById('teamId');
+      teamSelect.value = foundTeam.teamId;
+
+      autoSearch(false);
+
+      var btnBack = document.getElementById('btnBackToResults');
+      if (cameFromSearchResults) {
+        btnBack.style.display = 'inline-flex';
+      } else {
+        btnBack.style.display = 'none';
+      }
+    }
+  }
 
   // ==========================================
   // ZOOM
@@ -607,9 +916,6 @@
     if (img) img.style.transform = 'scale(' + (zoomVal / 100) + ')';
   }
 
-  // ==========================================
-  // FLOOR PLAN DISPLAY
-  // ==========================================
   // ==========================================
   // FLOOR PLAN DISPLAY & DRAG TO SCROLL
   // ==========================================
@@ -627,37 +933,17 @@
 
     var link = floorPlanMap[category];
     
-    // เงื่อนไขภาคใต้ (Fallback)
-    if (category.trim() === 'ภาคใต้') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=18lmNvmbL8qyIkZz_QD11Q9l9EaKQ_9qs';
-    }
-
-    if (category.trim() === 'กรุงเทพมหานคร') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1jUEHByTwGqRdKmbl3xUvL7V85qM4yIf-';
-    }
-
-    if (category.trim() === 'ภาคกลาง') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1T3HZuPFVvIW5WR397IbNs2DajrQG7BkE';
-    }
-    
-    if (category.trim() === 'ภาคตะวันออกเฉียงเหนือ') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1wwb06NPH2mKVeASjFa8MsOWu7qTJSNsD';
-    }
-
-    if (category.trim() === 'ภาคเหนือ') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1-_8sTH9lrSjldCNureKyheSgprMo6xq_';
-    }
-
-    if (category.trim() === 'ชิงแชมป์ประเทศไทย') {
-      link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1kbVoEG6p6vGTRuhxARrUcP0pGpd6kobd';
-    }
+    if (category.trim() === 'ภาคใต้') link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=18lmNvmbL8qyIkZz_QD11Q9l9EaKQ_9qs';
+    if (category.trim() === 'กรุงเทพมหานคร') link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1jUEHByTwGqRdKmbl3xUvL7V85qM4yIf-';
+    if (category.trim() === 'ภาคกลาง') link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1T3HZuPFVvIW5WR397IbNs2DajrQG7BkE';
+    if (category.trim() === 'ภาคตะวันออกเฉียงเหนือ') link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1wwb06NPH2mKVeASjFa8MsOWu7qTJSNsD';
+    if (category.trim() === 'ภาคเหนือ') link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1-_8sTH9lrSjldCNureKyheSgprMo6xq_';
+    if (category.trim() === 'ชิงแชมป์ประเทศไทย') link = link || 'https://drive.google.com/thumbnail?sz=w1200&id=1kbVoEG6p6vGTRuhxARrUcP0pGpd6kobd';
     
     if (link && link.trim() !== '' && link !== 'data:;base64,') {
       wrap.innerHTML = '<img src="' + link + '" alt="Floor Plan: ' + category + '">';
       zoomCtrl.style.display = 'flex';
       setZoom(100);
-      
-      // เรียกใช้ระบบลากเปิดฟังก์ชัน Drag หลังจากภาพโหลดเสร็จ
       initDragToScroll(wrap);
     } else {
       wrap.innerHTML =
@@ -668,17 +954,13 @@
         '</div>';
       zoomCtrl.style.display = 'none';
     }
-}
+  }
 
-  // ==========================================
-  // FUNCTION: ประมวลผลลากเมาส์ เลื่อน บน-ล่าง-ซ้าย-ขวา
-  // ==========================================
   function initDragToScroll(el) {
     var isDown = false;
     var startX, startY;
     var scrollLeft, scrollTop;
 
-    // 1. เมื่อกดเมาส์ลงบนภาพ
     el.addEventListener('mousedown', function(e) {
       isDown = true;
       startX = e.pageX - el.offsetLeft;
@@ -687,29 +969,20 @@
       scrollTop = el.scrollTop;
     });
 
-    // 2. เมื่อเมาส์หลุดออกจากขอบกล่อง
-    el.addEventListener('mouseleave', function() {
-      isDown = false;
-    });
+    el.addEventListener('mouseleave', function() { isDown = false; });
+    el.addEventListener('mouseup', function() { isDown = false; });
 
-    // 3. เมื่อปล่อยเมาส์
-    el.addEventListener('mouseup', function() {
-      isDown = false;
-    });
-
-    // 4. จังหวะที่ลากเมาส์ ขยับ ซ้าย-ขวา-บน-ล่าง
     el.addEventListener('mousemove', function(e) {
       if(!isDown) return;
       e.preventDefault();
       var x = e.pageX - el.offsetLeft;
       var y = e.pageY - el.offsetTop;
-      var walkX = (x - startX) * 1.5; // คูณ 1.5 เพื่อเพิ่มความเร็วในการลากเลื่อน (ปรับลด-เพิ่มได้)
+      var walkX = (x - startX) * 1.5;
       var walkY = (y - startY) * 1.5;
       el.scrollLeft = scrollLeft - walkX;
       el.scrollTop = scrollTop - walkY;
     });
 
-    // --- รองรับระบบสัมผัส (Touch Screen) บนสมาร์ตโฟน/แท็บเล็ต ---
     el.addEventListener('touchstart', function(e) {
       isDown = true;
       startX = e.touches[0].pageX - el.offsetLeft;
@@ -718,9 +991,7 @@
       scrollTop = el.scrollTop;
     });
 
-    el.addEventListener('touchend', function() {
-      isDown = false;
-    });
+    el.addEventListener('touchend', function() { isDown = false; });
 
     el.addEventListener('touchmove', function(e) {
       if(!isDown) return;
@@ -733,22 +1004,15 @@
     });
   }
 
-  // ==========================================
-  // GET URL PARAMETER
-  // ==========================================
   function getUrlParam(name) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
   }
 
-  // ==========================================
-  // COPY LINK TO CLIPBOARD
-  // ==========================================
   function copyShareLink() {
     var teamId = document.getElementById('teamId').value;
     if (!teamId) return;
 
-    // หา URL หลักของเว็บแอปพลิเคชัน (ลบ Parameter เดิมออกถ้ามี)
     var baseUrl = window.location.href.split('?')[0];
     var shareUrl = baseUrl + '?teamId=' + encodeURIComponent(teamId);
 
@@ -762,36 +1026,16 @@
         background: '#ffffff',
         color: '#333333'
       });
-    }).catch(function() {
-      // Fallback เผื่อเบราว์เซอร์ไม่รองรับ clipboard API
-      var tempInput = document.createElement('input');
-      tempInput.value = shareUrl;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      Swal.fire({
-        title: 'คัดลอกลิงก์สำเร็จ!',
-        text: 'คุณสามารถส่งลิงก์นี้ให้ทีมเปิดดูข้อมูลได้ทันที',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false,
-        background: '#ffffff',
-        color: '#333333'
-      });
     });
   }
 
-  // ==========================================
-  // INIT
-  // ==========================================
   window.onload = function() {
     Swal.fire({
       title: 'กำลังเชื่อมต่อข้อมูล...',
       text: 'กรุณารอสักครู่',
       allowOutsideClick: false,
       background: '#ffffff',
-        color: '#333333',
+      color: '#333333',
       didOpen: function() { Swal.showLoading(); }
     });
 
@@ -799,9 +1043,6 @@
     startAutoRefresh();
   };
 
-  // ==========================================
-  // DATA FETCH FROM SERVER
-  // ==========================================
   function fetchDataFromServer(isFirstLoad) {
     fetch(API_URL)
       .then(function(r) { return r.json(); })
@@ -824,7 +1065,6 @@
         if (isFirstLoad) {
           populateCategories();
           
-          // ตรวจสอบพารามิเตอร์ทีมจาก URL (?teamId=...)
           var paramTeamId = getUrlParam('teamId');
           if (paramTeamId) {
             handleAutoSelectFromParam(paramTeamId.trim());
@@ -851,35 +1091,16 @@
       });
   }
 
-  // ==========================================
-  // HANDLE AUTO SELECT VIA URL PARAMETER
-  // ==========================================
   function handleAutoSelectFromParam(targetTeamId) {
-    // ค้นหาทีมในฐานข้อมูลทั้งหมดเพื่อเอา Category และ Age Group
     var foundTeam = allData.find(function(t) {
       return String(t.teamId).toLowerCase() === targetTeamId.toLowerCase();
     });
 
     if (foundTeam) {
-      // 1. เลือก Category
-      var catSelect = document.getElementById('category');
-      catSelect.value = foundTeam.category;
-      
-      // 2. อัปเดตและเลือก Age Group
-      updateAgeGroups();
-      var ageSelect = document.getElementById('ageGroup');
-      ageSelect.value = foundTeam.ageGroup;
-      
-      // 3. อัปเดตและเลือก Team ID
-      updateTeamIDs();
-      var teamSelect = document.getElementById('teamId');
-      teamSelect.value = foundTeam.teamId;
-      
-      // 4. สั่งค้นหาและแสดงผล
-      autoSearch(false);
+      cameFromSearchResults = false;
+      selectTeamDirectly(foundTeam.teamId);
       Swal.close();
     } else {
-      // ถ้าไม่เจอทีมจากลิงก์ที่ส่งมา ให้ปิด Loading ปกติ
       Swal.close();
       Swal.fire({
         title: 'ไม่พบข้อมูลทีม',
@@ -891,9 +1112,6 @@
     }
   }
 
-  // ==========================================
-  // DROPDOWNS
-  // ==========================================
   function populateCategories() {
     var catSelect = document.getElementById('category');
     var cats = [];
@@ -919,7 +1137,16 @@
       var ages = [];
       allData.filter(function(i) { return i.category === catVal; })
              .forEach(function(i) { if (i.ageGroup && ages.indexOf(i.ageGroup) === -1) ages.push(i.ageGroup); });
-      ages.sort().forEach(function(a) { ageSelect.options.add(new Option(a, a)); });
+
+      // เรียงลำดับ Age Group: Elementary -> Junior -> Senior
+      ages.sort(function(a, b) {
+        var rankA = getAgeRank(a);
+        var rankB = getAgeRank(b);
+        if (rankA !== rankB) return rankA - rankB;
+        return a.localeCompare(b);
+      });
+
+      ages.forEach(function(a) { ageSelect.options.add(new Option(a, a)); });
       ageSelect.disabled = false;
     }
   }
@@ -938,14 +1165,17 @@
     }
   }
 
-  // ==========================================
-  // SEARCH & DISPLAY
-  // ==========================================
   function autoSearch(isManual) {
     if (isManual === undefined) isManual = true;
     var teamId   = document.getElementById('teamId').value;
     var category = document.getElementById('category').value;
     var ageGroup = document.getElementById('ageGroup').value;
+
+    if (isManual) {
+      cameFromSearchResults = false;
+      document.getElementById('btnBackToResults').style.display = 'none';
+      document.getElementById('searchResultsArea').style.display = 'none';
+    }
 
     if (!teamId) { clearDisplay(); return; }
 
@@ -966,7 +1196,11 @@
     }
     if (!result) return;
 
-    document.getElementById('seatDisplay').innerText       = result.no          || '-';
+    var seatDisplayElem = document.getElementById('seatDisplay');
+    seatDisplayElem.innerText = result.no || '-';
+    // ปรับสีข้อความลำดับที่นั่งตามรุ่น
+    seatDisplayElem.style.color = getAgeColor(result.ageGroup);
+
     document.getElementById('teamNameDisplay').innerText   = result.teamName    || '-';
     document.getElementById('institutionDisplay').innerText = result.institution || '-';
     document.getElementById('coachDisplay').innerText      = result.coach       || '-';
