@@ -576,7 +576,6 @@
           </table>
         </div>
 
-        <!-- หมายเหตุอธิบายความหมายของสี -->
         <div style="font-size: 0.8rem; color: #475569; margin-top: 14px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; background: rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);">
           <span style="font-weight: 500;">หมายเหตุ (สีข้อความตัวเลข / สีแถว):</span>
           <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#16a34a; border-radius:3px; display:inline-block;"></span> Elementary (สีเขียว)</span>
@@ -711,8 +710,45 @@
   var floorPlanMap = {}; 
   var zoomVal = 100;
   var cameFromSearchResults = false;
+  var autoRefreshInterval = null;
 
   var API_URL = "https://script.google.com/macros/s/AKfycbyVJOiT4tndTnGOATGPOPHryDXqsz663ju2dbH8YqP_zqWvgkH7Ry5WR4-QG9VODIPf/exec?api=true";
+
+  // ==========================================
+  // FETCH HELPER: RETRY + TIMEOUT (15s) + ABORT REASON
+  // ==========================================
+  async function fetchWithRetryAndTimeout(url, retries = 3, backoffMs = 1000, timeoutMs = 15000) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => {
+        controller.abort(new Error('การเชื่อมต่อหมดเวลา (Timeout)'));
+      }, timeoutMs);
+
+      try {
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timer);
+
+        if (!response.ok) {
+          throw new Error('HTTP Status Error: ' + response.status + ' (' + response.statusText + ')');
+        }
+
+        return await response.json();
+      } catch (err) {
+        clearTimeout(timer);
+
+        const isAbort = err.name === 'AbortError' || err.message.includes('aborted');
+        const errorDetail = isAbort ? 'เซิร์ฟเวอร์ตอบสนองช้าเกิน ' + (timeoutMs / 1000) + ' วินาที' : err.message;
+
+        console.warn('[API Attempt ' + (attempt + 1) + '/' + retries + ' Failed]:', errorDetail);
+
+        if (attempt === retries - 1) {
+          throw new Error(errorDetail);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, backoffMs * Math.pow(2, attempt)));
+      }
+    }
+  }
 
   // ==========================================
   // HELPER FUNCTIONS: AGE GROUP COLOR & RANK
@@ -722,7 +758,7 @@
     if (age.includes('elementary')) return '#16a34a'; // สีเขียว
     if (age.includes('junior'))     return '#dc2626'; // สีแดง
     if (age.includes('senior'))     return '#2563eb'; // สีน้ำเงิน
-    return '#1e293b'; // สีปกติตัวเลือกอื่น
+    return '#1e293b';
   }
 
   function getAgeRank(ageGroup) {
@@ -772,7 +808,6 @@
       return;
     }
 
-    // Sort ผลการค้นหาตาม Category -> Age Group (Elementary->Junior->Senior) -> Team ID
     matches.sort(function(a, b) {
       var catA = String(a.category || '');
       var catB = String(b.category || '');
@@ -796,7 +831,6 @@
       tbody.innerHTML = '';
       document.getElementById('searchResultsTitle').innerText = 'ผลการค้นหาสำหรับ "' + document.getElementById('searchInput').value.trim() + '" (พบ ' + matches.length + ' รายการ)';
 
-      // สร้าง Tab แยก Category
       renderCategoryTabs(matches);
 
       matches.forEach(function(t) {
@@ -818,7 +852,6 @@
           searchResultsArea.style.display = 'none';
         };
 
-        // ลำดับที่นั่ง ตัวหนังสือเปลี่ยนสีไปตามรุ่น
         var seatColor = getAgeColor(t.ageGroup);
 
         tr.innerHTML = '<td><strong style="color: ' + seatColor + '; font-size: 1.05rem;">' + (t.no || '-') + '</strong></td>' +
@@ -1041,11 +1074,11 @@
 
     fetchDataFromServer(true);
     startAutoRefresh();
+    initVisibilityListener();
   };
 
   function fetchDataFromServer(isFirstLoad) {
-    fetch(API_URL)
-      .then(function(r) { return r.json(); })
+    fetchWithRetryAndTimeout(API_URL, 3, 1000, 15000)
       .then(function(res) {
         allData = res.teams || [];
         if (res.visitors) document.getElementById('visitorCount').innerText = res.visitors;
@@ -1076,13 +1109,14 @@
         }
       })
       .catch(function(err) {
-        console.error('Fetch error:', err);
+        console.error('FetchData Error Details:', err);
         document.getElementById('sysStatusDot').className = 'dot dot-red';
         document.getElementById('sysStatusText').innerText = 'Disconnected';
+
         if (isFirstLoad) {
           Swal.fire({
-            title: 'ผิดพลาด',
-            text: 'ไม่สามารถเชื่อมต่อข้อมูลได้',
+            title: 'การเชื่อมต่อล่าช้า',
+            text: 'ไม่สามารถดึงข้อมูลได้ (' + (err.message || 'Network Error') + ') กรุณาลองใหม่อีกครั้ง',
             icon: 'error',
             background: '#ffffff',
             color: '#333333'
@@ -1138,7 +1172,6 @@
       allData.filter(function(i) { return i.category === catVal; })
              .forEach(function(i) { if (i.ageGroup && ages.indexOf(i.ageGroup) === -1) ages.push(i.ageGroup); });
 
-      // เรียงลำดับ Age Group: Elementary -> Junior -> Senior
       ages.sort(function(a, b) {
         var rankA = getAgeRank(a);
         var rankB = getAgeRank(b);
@@ -1198,7 +1231,6 @@
 
     var seatDisplayElem = document.getElementById('seatDisplay');
     seatDisplayElem.innerText = result.no || '-';
-    // ปรับสีข้อความลำดับที่นั่งตามรุ่น
     seatDisplayElem.style.color = getAgeColor(result.ageGroup);
 
     document.getElementById('teamNameDisplay').innerText   = result.teamName    || '-';
@@ -1252,8 +1284,34 @@
     document.getElementById('seatDisplay').innerText          = '--';
   }
 
+  // ==========================================
+  // VISIBILITY & AUTO REFRESH MANAGEMENT
+  // ==========================================
   function startAutoRefresh() {
-    setInterval(function() { fetchDataFromServer(false); }, 60000);
+    stopAutoRefresh();
+    autoRefreshInterval = setInterval(function() {
+      if (!document.hidden) {
+        fetchDataFromServer(false);
+      }
+    }, 60000);
+  }
+
+  function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+      clearInterval(autoRefreshInterval);
+      autoRefreshInterval = null;
+    }
+  }
+
+  function initVisibilityListener() {
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        stopAutoRefresh();
+      } else {
+        fetchDataFromServer(false);
+        startAutoRefresh();
+      }
+    });
   }
 </script>
 
